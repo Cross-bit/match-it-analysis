@@ -1,0 +1,39 @@
+Copyright (c) 2026 Ondřej Kříž
+
+This software is provided as a research prototype developed for academic
+research on group recommender systems. Researchers are explicitly welcome
+to use, study, and build upon this work for non-commercial purposes,
+subject to the conditions below.
+
+Permission is granted to use, copy, and modify this software for
+non-commercial research and educational purposes only, provided that:
+
+1. This copyright notice is retained in all copies or substantial
+   portions of the software.
+
+2. If the software is used in academic publications, the author and
+   the associated research paper (if applicable) must be properly cited.
+
+3. Any derivative works must be used for non-commercial purposes.
+
+4. This software, in whole or in part, may not be used to train, fine-tune,
+   or otherwise develop any machine learning or artificial intelligence system
+   for commercial purposes without explicit written permission of the author.
+
+Commercial use, redistribution in commercial systems, or use for commercial
+advantage is prohibited without explicit written permission of the author.
+"Commercial use" includes, but is not limited to, use in any product, service,
+or activity intended for commercial advantage or monetary compensation.
+
+"Non-commercial use" means use for academic research, education, or personal
+purposes without direct or indirect commercial advantage or monetary
+compensation.
+
+For commercial licensing inquiries contact: ondra.kryz@seznam.cz
+
+This license is automatically terminated if you violate any of its terms.
+Upon termination, you must destroy all copies of the software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.
