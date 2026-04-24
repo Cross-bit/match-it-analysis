@@ -1,0 +1,738 @@
+%%% Hlavní soubor. Zde se definují základní parametry a odkazuje se na ostatní části. %%%
+
+% Meta-data o práci (je nutno upravit)
+\input metadata.tex
+
+% Vygenerujeme metadata ve formátu XMP pro použití balíčkem pdfx
+\input xmp.tex
+
+%% Verze pro jednostranný tisk:
+% Okraje: levý 40mm, pravý 25mm, horní a dolní 25mm
+% (ale pozor, LaTeX si sám přidává 1in)
+\documentclass[12pt,a4paper]{report}
+\setlength\textwidth{145mm}
+\setlength\textheight{247mm}
+\setlength\oddsidemargin{15mm}
+\setlength\evensidemargin{15mm}
+\setlength\topmargin{0mm}
+\setlength\headsep{0mm}
+\setlength\headheight{0mm}
+% \openright zařídí, aby následující text začínal na pravé straně knihy
+\let\openright=\clearpage
+
+%% Pokud tiskneme oboustranně:
+% \documentclass[12pt,a4paper,twoside,openright]{report}
+% \setlength\textwidth{145mm}
+% \setlength\textheight{247mm}
+% \setlength\oddsidemargin{14.2mm}
+% \setlength\evensidemargin{0mm}
+% \setlength\topmargin{0mm}
+% \setlength\headsep{0mm}
+% \setlength\headheight{0mm}
+% \let\openright=\cleardoublepage
+
+%% Pokud práci odevzdáváme pouze elektronicky, vypadají lépe symetrické okraje
+% \documentclass[12pt,a4paper]{report}
+% \setlength\textwidth{145mm}
+% \setlength\textheight{247mm}
+% \setlength\oddsidemargin{10mm}
+% \setlength\evensidemargin{10mm}
+% \setlength\topmargin{0mm}
+% \setlength\headsep{0mm}
+% \setlength\headheight{0mm}
+% \let\openright=\clearpage
+
+%% Vytváříme PDF/A-2u
+\usepackage[a-2u]{pdfx}
+
+%% Přepneme na českou sazbu a fonty Latin Modern
+\usepackage[czech]{babel}
+\usepackage{lmodern}
+
+% Pokud nepouživáme LuaTeX, je potřeba ještě nastavit kódování znaků
+\usepackage{iftex}
+\ifpdftex
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\fi
+
+%%% Další užitečné balíčky (jsou součástí běžných distribucí LaTeXu)
+\usepackage{amsmath}        % rozšíření pro sazbu matematiky
+\usepackage{amsfonts}       % matematické fonty
+\usepackage{amsthm}         % sazba vět, definic apod.
+\usepackage{bm}             % tučné symboly (příkaz \bm)
+\usepackage{booktabs}       % lepší vodorovné linky v tabulkách
+\usepackage{caption}        % umožní definovat vlastní popisky plovoucích objektů
+\usepackage{csquotes}       % uvozovky závislé na jazyku
+\usepackage{dcolumn}        % vylepšené zarovnání sloupců tabulek
+\usepackage{floatrow}       % umožní definovat vlastní typy plovoucích objektů
+\usepackage{graphicx}       % vkládání obrázků
+\usepackage{icomma}         % inteligetní čárka v matematickém módu
+\usepackage{indentfirst}    % zavede odsazení 1. odstavce kapitoly
+\usepackage[nopatch=item]{microtype}  % mikrotypografická rozšíření
+\usepackage{paralist}       % lepší enumerate a itemize
+\usepackage[nottoc]{tocbibind} % zajistí přidání seznamu literatury,
+                            % obrázků a tabulek do obsahu
+\usepackage{xcolor}         % barevná sazba
+
+% Balíček hyperref, kterým jdou vyrábět klikací odkazy v PDF,
+% ale hlavně ho používáme k uložení metadat do PDF (včetně obsahu).
+% Většinu nastavítek přednastaví balíček pdfx.
+\hypersetup{unicode}
+\hypersetup{breaklinks=true}
+
+% Balíčky pro sazbu informatických prací
+\usepackage{algpseudocode}  % součást balíčku algorithmicx
+\usepackage[Algoritmus]{algorithm}
+\usepackage{fancyvrb}       % vylepšené prostředí verbatim
+\usepackage{listings}       % zvýrazňování syntaxe zdrojových textů
+
+% Cleveref může zjednodušit odkazování, ale jeho užitečnost pro češtinu
+% je minimalní, protože nezvládá skloňování.
+% \usepackage{cleveref}
+
+% Formátování bibliografie (odkazů na literaturu)
+% Detailní nastavení můžete upravit v souboru macros.tex.
+%
+% POZOR: Zvyklosti různých oborů a kateder se liší. Konzultujte se svým
+% vedoucím, jaký formát citací je pro vaši práci vhodný!
+%
+% Základní formát podle normy ISO 690 s číslovanými odkazy
+\usepackage[natbib,style=iso-numeric,sorting=none]{biblatex}
+% ISO 690 s alfanumerickými odkazy (zkratky jmen autorů)
+%\usepackage[natbib,style=iso-alphabetic]{biblatex}
+% ISO 690 s citacemi tvaru Autor (rok)
+%\usepackage[natbib,style=iso-authoryear]{biblatex}
+%
+% V některých oborech je běžnější obyčejný formát s číslovanými odkazy
+% (sorting=none říká, že se bibliografie má řadit podle pořadí citací):
+%\usepackage[natbib,style=numeric,sorting=none]{biblatex}
+% Číslované odkazy, navíc se [1,2,3,4,5] komprimuje na [1-5]
+%\usepackage[natbib,style=numeric-comp,sorting=none]{biblatex}
+% Obyčejný formát s alfanumerickými odkazy:
+%\usepackage[natbib,style=alphabetic]{biblatex}
+
+% Custom přidané packages a definice
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{svg}
+\usepackage{float}
+%\newcommand{\todo}[1]{\textcolor{red}{#1}}
+\DeclareRobustCommand{\todo}[1]{\textcolor{red}{#1}}
+
+\DeclareRobustCommand{\notSureIfOkToSay}[1]{\textcolor{orange}{#1}} % --> inaccurate or non well formulated hypothesis
+
+\DeclareRobustCommand{\notSureIfOkToSayThisWay}[1]{\textcolor{blue}{#1}} % --> formal, grammar or syntactic thing in text ...
+
+\usepackage{siunitx}
+
+\sisetup{
+    output-decimal-marker = {,},
+    detect-weight = true,
+    detect-family = true,
+    round-mode = places,
+    round-precision = 4,
+    group-digits = false,
+    mode = math
+}
+
+\newcommand{\bnum}[1]{\bfseries\tablenum{#1}}
+
+%\usepackage{tcolorbox}
+%\newtcolorbox{todobox}{colback=red!5!white, colframe=red!75!black}
+
+% Z tohoto souboru se načítají položky bibliografie
+\addbibresource{literatura.bib}
+
+% Definice různých užitečných maker (viz popis uvnitř souboru)
+\input macros.tex
+
+%%% Titulní strana a různé povinné informační strany
+\begin{document}
+\include{title}
+
+%%% Strana s automaticky generovaným obsahem práce
+
+\tableofcontents
+
+%%% Jednotlivé kapitoly práce jsou pro přehlednost uloženy v samostatných souborech
+\include{uvod}
+\include{kap01}
+\include{kap02}
+\include{kap03}
+\include{kap04}
+\include{kap05}
+\include{kap06}
+\include{kap07}
+\include{kap08}
+
+\include{zaver}
+
+%%% Seznam použité literatury
+\include{literatura}
+
+%%% Obrázky v práci
+%%% (pokud jich je malé množství, obvykle není třeba seznam uvádět)
+\listoffigures
+
+%%% Tabulky v práci (opět nemusí být nutné uvádět)
+%%% U matematických prací může být lepší přemístit seznam tabulek na začátek práce.
+\listoftables
+
+%%% Použité zkratky v práci (opět nemusí být nutné uvádět)
+%%% U matematických prací může být lepší přemístit seznam zkratek na začátek práce.
+\chapwithtoc{Seznam použitých zkratek}
+
+%%% Součástí doktorských prací musí být seznam vlastních publikací
+\ifx\ThesisType\TypePhD
+\chapwithtoc{Seznam publikací}
+\fi
+
+%%% Přílohy k práci, existují-li. Každá příloha musí být alespoň jednou
+%%% odkazována z vlastního textu práce. Přílohy se číslují.
+%%%
+%%% Do tištěné verze se spíše hodí přílohy, které lze číst a prohlížet (dodatečné
+%%% tabulky a grafy, různé textové doplňky, ukázky výstupů z počítačových programů,
+%%% apod.). Do elektronické verze se hodí přílohy, které budou spíše používány
+%%% v elektronické podobě než čteny (zdrojové kódy programů, datové soubory,
+%%% interaktivní grafy apod.). Elektronické přílohy se nahrávají do SISu.
+%%% Povolené formáty souborů specifikuje opatření rektora č. 72/2017.
+%%% Výjimky schvaluje fakultní koordinátor pro zavěrečné práce.
+\appendix
+\chapter{Přílohy}
+
+\section{Přehled základních agregačních funkcí}
+
+
+\begin{table}[b!]
+    \centering
+    \begin{tabular}{l@{\hspace{1.3cm}}D{.}{,}{3.2}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}}
+    \toprule
+    \textbf{Člen} &
+    \mc{\textbf{$i_1$}} &
+    \mc{\textbf{$i_2$}} &
+    \mc{\textbf{$i_3$}} &
+    \mc{\textbf{$i_4$}} &
+    \mc{\textbf{$i_5$}} &
+    \mc{\textbf{$i_6$}} \\
+    \midrule
+    Alice & 10 & 8 & 4 & 4 & 5 & 7 \\
+    Bob & 7 & 2 & 5 & 4 & 4 & 3 \\
+    Carol & 6 & 1 & 8 & 4 & 1 & 2 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Výchozí tabulka hodnocení předmětů katalogu $i_1-i_6$}\label{tab:ScoresForApendix}
+\end{table}
+
+\begin{table}[b!]
+    \centering
+    \begin{tabular}{| p{3cm} | p{5cm} | p{5cm} | p{5cm} |}
+    \toprule
+    \textbf{Agregační strategie} &
+    \mc{\textbf{Jak funguje}} &
+    %\mc{\textbf{Kategorie}} &
+    \mc{\textbf{Příklad}} \\
+    \midrule
+    \midrule \textit{Plurality voting/majority voting}
+    & Opakovaně aplikuje \textit{first past the post}, položka s nejvíce hlasy je vybrána.
+    & Vyhrává položka $i_1$, protože majorita skupiny položce dala nejvyšší hodnocení.
+    Dále již bez $i_1$ vyhraje $i_3$ atd. \\
+    %\midrule Majority voting & Vyhrává položka s nadpoloviční většinou hlasů. & První vybraná položka je item $i_1$ - protože má nejvyšší počet hlasů, v dalším kole bychom vybrali položku $i_2$ a takto pokračujeme. \\
+    \midrule \textit{Average} & Z průměrujeme jednotlivá hodnocení všech členů. & Skupinové hodnocení pro $i_3$~je $(4+5+8)/3 = 6$. \\
+    \midrule \textit{Multiplicative} & Jednotlivá hodnocení vynásobíme. & Pro $i_3$ je skóre $4\cdot5\cdot8 = 160$.  \\
+    \midrule \textit{Borda count} & Položkám přiřadíme skóre podle relevance pro každého uživatele.
+    Následně sečteme jednotlivá skóre přes všechny uživatele.  &
+
+    %Pro uživatele A dostaneme řazení dle skóre\footnote{
+    %    Položce udělíme skóre odpovídající pozici v seznamu sestupně. Tedy pro $n$ položek
+    %    první předmět s nejvyšším hodnocením dostane $n-1$, druhý $n-2$, ...
+    %    Pokud některé položky mají stejné hodnocení, tak jejich skóre zprůměrujeme.
+    %}.
+    Pro Alici dostaneme řazení podle skóre:
+    (($i_1$, 5), ($i_2$, 4), ($i_6$, 3), ($i_5$, 2), ($i_3$, 0.5), ($i_4$, 0.5)),
+    zbylá skóre jsou pro přehlednost v \ref{tab:BordaScore}.
+    Pro skupinu dostaneme výsledné řazení: (($i_1$, 14), ($i_3$, 9.5), ($i_4$, 6), ($i_5$, 5), ($i_6$, 5), ($i_2$, 5)).\\
+    %(($i_1$, 14), ($i_3$, 9.5), ($i_4$, 6), ($i_5$, 5), ($i_6$, 5), ($i_2$, 5))
+    \midrule \textit{Copeland rule} &
+    Spočítá kolikrát předmět v majoritním hlasování porazí
+    ostatní položky od čehož odečítá kolikrát prohraje.
+    & Položka $i_3$ má skupinové skóre 3,
+    protože jeho majoritní hodnocení je 17,
+    což je vyšší než vychází pro skupinky
+    ($i_2$, $i_4$, $i_5$, $i_6$), naopak ($i_1$) má hlasování vyšší, tedy 4 - 1 = 3 \\
+    \midrule \textit{Approval voting} & Počítá počet individuálních hlasů vyšších než je stanovená hranice. & Pro hranici $2$ a položku $i_3$ dostaneme $3$ a pro $i_5$ je $2$.\\
+    \midrule \textit{Least Misery} & Vybírá minimum z hlasů. & $i_1$ tedy dostane $6$.  \\
+    \midrule \textit{Most pleasure} & Vybírá maximum z hlasů. & Pro $i_1$ je to $10$.  \\
+    \midrule \textit{Average without Misery} & Průměr, ale vynecháme hlasy nižší než je stanovená hranice. &
+    Pro min. hranici 2 vynecháme $i_2$, $i_5$, protože někteří uživatelé je nesnáší. \\
+    \midrule \textit{Fairness} & Postupně vybíráme z maximálních hodnocení jednotlivých členů. &
+    Vyhrává $i_1$ (nejlépe hodnocené Alicí), potom $i_3$ (nejlepší od Boba) a na konec
+    $i_6$ (další nejlepší od Carol) a opakujeme.  \\
+    \midrule
+    \textit{Most respected person} & Používá hodnocení nejrespektovanější osoby ve skupině. &
+    Pokud je Carol nejrespektovanější osoba, potom $i_1$ má hodnocení 6.\\
+    \midrule
+    \bottomrule
+    \end{tabular}
+
+    \caption{Shrnutí možných agregačních strategií vycházející z teorie sociálního výběru.}
+    \label{tab:AllBasicStrategies}
+\end{table}
+
+
+\begin{table}[b!]
+    \centering
+    \begin{tabular}{l@{\hspace{1.3cm}}D{.}{,}{3.2}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}}
+    \toprule
+    \textbf{Člen} &
+    \mc{\textbf{$i_1$}} &
+    \mc{\textbf{$i_2$}} &
+    \mc{\textbf{$i_3$}} &
+    \mc{\textbf{$i_4$}} &
+    \mc{\textbf{$i_5$}} &
+    \mc{\textbf{$i_6$}} \\
+    \midrule
+    Skóre pro Alici & 5 & 4 & 0.5 & 0.5 & 2 & 3 \\
+    Skóre pro Boba   & 5 & 0 & 4 & 2.5 & 2.5 & 1 \\
+    Skóre pro Carol & 4 & 0.5 & 5 & 3 & 0.5 & 2 \\
+    Skóre skupiny & 14 & 4.5 & 9.5 & 6 & 5 & 5 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Borda count skóre pro položky $i_1 - i_6$. Pokud má více prvků stejné
+    hodnocení, každý dostane průměrné skóre. }
+    \label{tab:BordaScore}
+\end{table}
+
+
+
+\begin{table}[b!]
+    \centering
+    \begin{tabular}{l@{\hspace{1.5cm}}l}
+    \toprule
+    \textbf{Typy restaurací}\\
+    \midrule
+    restaurant & spanish\_restaurant \\
+    donut\_shop & turkish\_restaurant \\
+    bakery & wine\_bardeli \\
+    fast\_food\_restaurant & vietnamese\_restaurant \\
+    breakfast\_restaurant & ramen\_restaurant \\
+    chocolate\_factory & steak\_house \\
+    hamburger\_restaurant & cafe \\
+    brunch\_restaurant & buffet\_restaurant \\
+    dog\_cafe & fine\_dining\_restaurant \\
+    japanese\_restaurant & cat\_cafe \\
+    dessert\_restaurant & korean\_restaurant \\
+    juice\_shop & deli \\
+    diner & tea\_house \\
+    sushi\_restaurant & brazilian\_restaurant \\
+    italian\_restaurant & indian\_restaurant \\
+    pub & mexican\_restaurant \\
+    meal\_delivery & pizza\_restaurant \\
+    bar\_and\_grill & afghani\_restaurant \\
+    chinese\_restaurant & middle\_eastern\_restaurant \\
+    vegan\_restaurant & greek\_restaurant \\
+    mediterranean\_restaurant & ice\_cream\_shop \\
+    dessert\_shop & cafeteria \\
+    wine\_bar & food\_court \\
+    american\_restaurant & french\_restaurant \\
+    vegetarian\_restaurant & seafood\_restaurant \\
+    thai\_restaurant &  \\
+    chocolate\_shop &  \\
+    barbecue\_restaurant &  \\
+    bagel\_shop &  \\
+    asian\_restaurant &  \\
+    bar &  \\
+    confectionery &  \\
+    indonesian\_restaurant &  \\
+    lebanese\_restaurant &  \\
+    sandwich\_shop &  \\
+    african\_restaurant &  \\
+    \bottomrule
+    \end{tabular}
+    \caption{Klíčová slova vybraná pro vyhledávání }
+    \label{tab:FoodEstablishmentTypes}
+\end{table}
+
+
+\begin{listing}[H]
+    \begin{lstlisting}
+    {
+        id - id mista,
+        displayName - nazev mista,
+        formattedAddress - adresa mista,
+        location - GPS souradnice,
+        types - typy prirazene dle ciselniku,
+        photos - seznam jmen fotek mista,
+        rating - hodnoceni mista z google maps,
+        reviews - az 3 uzivatelska reviews,
+        priceLevel - cenova hladina (dle ciselniku),
+        allowsDogs - zdali povoluje vstup pro psi,
+        googleMapsUri - odkaz na Google maps s detailem mista,
+        regularOpeningHours - bezna oteviraci doba,
+        goodForGroups - je vhodne pro skupiny,
+        goodForChildren - je vhodne pro deti,
+        outdoorSeating - zdali nabizi venkovni sezeni,
+        delivery - zdali nabizi doruceni,
+        takeout - zdali nabizi jidlo sebou,
+        liveMusic - zdali nabizi zivou hudbu,
+        servesVegetarianFood - zdali nabizi vegetarianske jidlo
+    }
+\end{lstlisting}
+\caption{Struktura \textit{body} dotazu pro \textit{Places text search (New)} API.}
+\label{prog3:usedFieldMaskFields}
+\end{listing}
+
+
+
+\clearpage
+
+\section{Analýza samplovacího algoritmu inicializačních dat}
+\label{initSamplingAlgorithmAnalysis}
+V této části provedeme analýzu různých metod
+samplování filmů z \textit{datasetu MovieLens} pro inicializační session.
+
+\subsection{Cluster sampling (content based)}
+Jednou z možností jak zajistit
+dobrou diverzifikovanost vzorků
+je data nejprve rozdělit do \textit{clusterů},
+nad kterými následně provedeme výběr.
+
+Nejprve je však nutné vytvořit vhodné
+reprezentace filmů. Ty můžeme zkonstruovat
+\textit{one-hot-encodingem} příslušných
+žánrů\footnote{Mohlo by nás také napadnout použít MovieLens tagy,
+nicméně těch je velké množství, což by vedlo k
+vysoké dimenzionalitě a problémům při \textit{clustrování}.}.
+Pro obohacení navíc můžeme přidat
+dimenze popularity a průměrného hodnocení
+(škálované na [0,1]).
+Film~$i$~má~tedy reprezentaci
+
+\begin{equation}
+    r(i) = [genres_i, popularity_i, average\_rating_i].
+\end{equation}
+
+Následně provedeme rozdělení do \textit{k} \textit{clusterů} metodou
+\textit{k-means}. Pro určení optimální hodnoty \textit{k} se lze podívat na dvě metriky.
+Tou první je určení součtu čtverců vnitřních \textit{clusterů} (WCSS)
+pro různých velikosti \textit{k} a pokusit se na grafu nalézt
+tzv. \textit{elbow}\footnote{Elbow - bod největšího zakřivení průběhu.}.
+
+%\begin{equation}
+%    \text{WCSS} = \sum_{i=1}^{k} \sum_{x \in C_i} \| x - \mu_i \|^2
+%\end{equation}
+
+\begin{figure}[H]\centering
+    \includegraphics[width=145mm]{img/clustering-kmeans-elbow-method.pdf}
+    \caption{
+        Hodnoty WCSS pro různé hodnoty \textit{k} nad datasetem MovieLens.
+        }
+    \label{obr20:elbowMethod}
+\end{figure}
+
+
+Z výsledků analýzy metody \textit{elbow} -- graf \ref{obr20:elbowMethod}
+lze vypozorovat, že v grafu nedostáváme ostrý loket
+a máme tak pouze hrubý odhad $ k \in (18, 25) $.
+To naznačuje, že se \textit{clustry}
+do značné míry v \textit{datasetu} překrývají
+a nelze je tak jednoznačně určit.
+
+Pro konkrétní hodnotu můžeme použít \textit{KneeLocator}
+z python balíčku \textit{kneed}, který v křivce
+identifikuje největší změnu zakřivení.
+Odtud dostaneme hodnotu~\mbox{$k=20$}.
+
+\begin{figure}[H]\centering
+    \includegraphics[width=145mm]{img/clustering-silueth-score.pdf}
+    \caption{
+        Hodnoty WCSS pro různé hodnoty $k$ nad datasetem MovieLens.
+        }
+    \label{obr21:siluethScore}
+\end{figure}
+
+
+Alternativně lze pro různé hodnoty $k$
+změřit průměrný \textit{silueth-score}, který určuje
+jak dobře každý bod do svého \textit{clusteru} náleží.
+Výsledný průběh \ref{obr21:siluethScore} ukazuje, že
+významný růst se zastaví při hodnotě $k=20$,
+kdy křivka osciluje zhruba okolo hodnoty~$4,2$.
+
+
+
+Protože se data v \textit{datasetu} překrývají
+a některé filmy tak mohou náležet do více \textit{clustrů} současně,
+mohli bychom zkusit použít metodu \textit{soft} \textit{clustrování}.
+Konkrétně můžeme provést \textit{fuzzy-kmeans}.
+Hodnotu $k$ ponecháme, parametr \textit{fuzzy} stanovíme
+standardně na 2. To nám pro každý film určí pravděpodobnostní
+distribuci \textit{příslušnosti k jednotlivým clusterům}.
+
+Následně budeme samplovat 24 filmů přes jednotlivé clustery
+metodou \textit{round-robin}.
+
+\subsection{Cluster sampling (user based)}
+Alternativně bychom mohli \textit{clustrovat}
+uživatele podle jejich profilů hodnocení.
+To nám umožní rozdělit uživatele
+do skupin dle skrytých preferencí, které
+nedokážeme z \textit{datasetu} jednoduše
+určit (a tedy je nelze jednoduše
+zakódovat do reprezentace filmů,
+jako například žánry).
+
+Specificky pro tento případ,
+můžeme původní \textit{clustrovací}
+algoritmus \textit{kmeans} upravit
+tak, aby jako metriku pro přiřazení
+bodů do \textit{clusterů} nepoužíval \textit{euklidovskou metriku},
+%tedy, že uživatel $u \in C_i \quad \text{where} \quad i = \arg\min_j \|u - \mu_j\|^2$,
+ale zvolit \textit{cluster} podle \textit{Pearsonovy similarity},
+která je pro určení podobnosti uživatel vhodnější.
+
+Samplování poté můžeme provést tak, že doporučíme dostatečně
+velký vzorek kandidátů (například 100), ze kterého
+samplujeme uniformě náhodně nejpopulárnější
+předměty.
+
+
+
+
+
+
+
+\subsection{Baseline predictor}
+Alternativně můžeme nad daty použít některý z
+\textit{model based} doporučovacích přístupů,
+pomocí kterého vygenerujeme dostatečný počet kandidátů
+z nichž budeme samplovat. Protože chceme generovat
+doporučení na základě celého datasetu, tak se jako vhodný
+kandidát jeví \textit{base-line} prediktor
+$$
+    \hat{r}_{ui} = \mu + b_u + b_i,
+$$
+
+kde $b_u$ -- \textit{user bias}, vyjadřující okolik se uživatelské hodnocení liší od globální průměru
+a $b_i$ -- \textit{item bias}, vyjadřující okolik se hodnocení předmětu liší od globálního průměru.
+Tyto složky jsou určeny vyřešením následující optimalizační funkce
+
+$$
+\min_{b_u, b_i} \sum_{(u,i) \in \mathcal{K}} (r_{ui} - \mu - b_u - b_i)^2 + \lambda(b_u^2 + b_i^2),
+$$
+kde $\mathcal{K}$ je množina hodnocených předmětů uživatelem $u \in \mathcal{U}$ a $\lambda$ -- parametr L2 regularizace.
+
+\subsection{Metriky evaluace}
+
+
+\begin{figure}[H]\centering
+    \includegraphics[width=145mm]{img/init-sampling-comparison.pdf}
+    \caption{
+        Porovnání jednotlivých metod na stanovených metrikách.
+        }
+    \label{obr21:initAlgoComparisionApendix}
+\end{figure}
+
+
+
+
+
+\section{Parametry upravené sigmoid funkce}
+\label{sec:ShiftedSigmoid}
+
+Upravená \textit{sigmoid} funkce $\sigma_{c_0}: \mathbb{R} \rightarrow (c_0, 1)$ s dolním omezením $c_0 \in [0, 1)$,
+posunem $k_0 \in \mathbb{R}$ a parametrem $\alpha \in \mathbb{R}$ v $k \in \mathbb{R}$ má tvar
+
+\begin{equation}
+    \sigma_{c_0}(k) = \left(c_0 + (1-c_0) \frac{1}{1+e^{-\alpha(k-k_0)}} \right).
+\end{equation}
+
+
+Označme $\sigma' = \sigma_{c_0}(k)$. Jednoduchou úpravou pro $k$ dostaneme
+
+%Převedeme~výrazy~s~$c_0$~na pravou stranu a inverzí $()^{-1}$ obou stran dostaneme
+%$$
+%\frac{1-c_0}{\psi - c_0} = 1 + e^{-\alpha(k-k_0)},
+%$$
+%po odečtení 1 a aplikací logaritmu $\ln()$ na obě strany
+%$$
+%\ln\left(\frac{1-\psi}{\psi - c_0}\right) =  -\alpha(k-k_0),
+%$$
+%zjevně tedy
+$$
+k = k_0 - \frac{1}{\alpha} \ln\left( \frac{1-\sigma'}{\sigma'-c_0} \right).
+$$
+
+%$$
+%\psi(k) = \left(c_0 + (1-c_0) \frac{1}{1+e^{-\alpha(k-k_0)}} \right)
+%$$
+
+Pro $\sigma' = c_0 + \epsilon$ a nějaké malé $\epsilon \in (0, 1-c_0)$ dostaneme
+\begin{equation}
+    k = k_0 - \delta_{\epsilon},
+\end{equation}
+kde
+\begin{equation}
+    \delta_{\epsilon} = \frac{1}{\alpha} \ln\left( \frac{1-c_0}{\epsilon} - 1 \right).
+\end{equation}
+
+Horizontální posun funkce $\sigma'$ se zhruba konstantním růstem $c_0$ s přesností $\epsilon$ můžeme
+tedy označit $k_{\epsilon} := k_0 + \delta_{\epsilon}$.
+
+\medbreak
+
+\subsubsection{Další užitečná pozorování:}
+\begin{itemize}
+    \item \textit{Inflexní} bod $\sigma_{c_0}$ má souřadnice $((1+c_0)/2, k_0/\alpha)$.
+\end{itemize}
+
+
+\subsection{Horní mez upravené sigmoid funkce}
+\label{sec:ShiftedSigmoidUpper}
+
+
+
+Pro horní omezení \textit{sigmoid} funkce $\sigma_{c_0}$ můžeme buď upravit výraz $(1-c_0)$
+na obecnější tvar $(c-c_0)$, kde $c: \mathbb{N}_0 \rightarrow [c_0, 1]$,
+nebo si lze uvědomit, že stačí vhodně přeškálovat část se \textit{sigmoid} funkcí,
+tedy stačí nalézt vhodné $\gamma: \mathbb{N}_0 \rightarrow [0, 1]$,
+protože potom dostaneme
+\begin{equation}
+    \sigma'_{c_0}(k, s) = c_0 + (1-c_0)\sigma(k)\gamma(s),
+\end{equation}
+kde $\sigma$ je obecný \textit{sigmoid} v $k \in \mathbb{R}$ a $s \in \mathbb{N}_0$ je horní omezení.
+Pro účely práce uvažujme $s \in [s_{min}, s_{max}] \subset \mathbb{N}_0$.
+
+%$$
+%    f(x) = c_0 + (1-c_0)f(x) - (1-c_0)f(x)\gamma,
+%$$
+%tedy, že:
+%$$
+%    f(x) = c_0 + (1-c_0)f(x)(1 - \gamma).
+%$$
+%Neboli pro horní mez stačí nalézt vhodnou funkci $\gamma: \mathbb{R} \rightarrow [0, 1]$
+
+\subsubsection{Vhodné volby $\gamma$:}
+\begin{equation}
+    \gamma(s) = \left(\frac{\max\left(0,\min\left(s,s_{max}\right)-s_{min}\right)} {s_{max}-s_{min}}\right)^p
+\end{equation}
+pro $p\in \mathbb{N}$
+
+\begin{equation}
+    \gamma(s) = \frac{ e^{ \beta\max\left(0,\min\left(s,s_{max}\right)-s_{min}\right)} - 1 }{e^{ \beta\left( s_{max}-s_{min} \right)} - 1}
+\end{equation}
+pro $\beta \in \mathbb{R^+}$
+
+\clearpage
+
+\begin{table}[b!]
+    \centering
+    \begin{tabular}{l@{\hspace{1.5cm}}D{.}{,}{1.5}@{\hspace{1.5cm}}D{.}{,}{1.3}@{\hspace{1.5cm}}D{.}{,}{1.5}}
+    \toprule
+     & \mc{} & \mc{} & \mc{} \\
+    \pulrad{\textbf{$\lambda$}} & \mc{\pulrad{\textbf{precision@20}}} & \mc{\pulrad{\textbf{recall@20}}} & \mc{\pulrad{\textbf{NDCG@20}}} \\
+    \midrule
+    100 & 0.00132 & 0.024 & 0.026 \\
+    200 & 0.00137 & 0.025 & 0.027 \\
+    300 & 0.00142 & 0.027 & 0.028 \\
+    400 & 0.00157 & 0.029 & 0.031 \\
+    500 & 0.00163 & 0.03 & 0.033 \\
+    600 & 0.00158 & 0.029 & 0.032 \\
+    700 & 0.00148 & 0.027 & 0.03 \\
+    800 & 0.00142 & 0.026 & 0.028 \\
+    900 & 0.00147 & 0.026 & 0.029 \\
+    1000 & 0.00142 & 0.025 & 0.028 \\
+    1100 & 0.00142 & 0.025 & 0.028 \\
+    1200 & 0.00153 & 0.028 & 0.031 \\
+    1300 & 0.00142 & 0.025 & 0.028 \\
+    1400 & 0.00142 & 0.025 & 0.028 \\
+    1500 & 0.00147 & 0.026 & 0.029 \\
+    1600 & 0.00142 & 0.025 & 0.028 \\
+    1700 & 0.00147 & 0.026 & 0.029 \\
+    1800 & 0.00153 & 0.028 & 0.031 \\
+    1900 & 0.00142 & 0.025 & 0.028 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Přesnost $\text{EASE}^R$ pro různé volby $\lambda$ pro \textit{dataset} s minimálním počtem hodnocení pro uživatele $\#(r_{min}) \ge 2$}
+    \label{tab:EaserRegMeasure}
+    \end{table}
+
+    \begin{table}[b!]
+    \centering
+    \begin{tabular}{l@{\hspace{1.5cm}}D{.}{,}{1.5}@{\hspace{1.5cm}}D{.}{,}{1.3}@{\hspace{1.5cm}}D{.}{,}{1.5}}
+    \toprule
+     & \mc{} & \mc{} & \mc{} \\
+    \pulrad{\textbf{$\lambda$}} & \mc{\pulrad{\textbf{precision@20}}} & \mc{\pulrad{\textbf{recall@20}}} & \mc{\pulrad{\textbf{NDCG@20}}} \\
+    \midrule
+    100 & 0.00163 & 0.03 & 0.033 \\
+    200 & 0.00172 & 0.031 & 0.034 \\
+    300 & 0.00172 & 0.031 & 0.034 \\
+    400 & 0.00172 & 0.031 & 0.034 \\
+    500 & 0.0018 & 0.033 & 0.036 \\
+    600 & 0.00172 & 0.031 & 0.034 \\
+    700 & 0.0018 & 0.033 & 0.036 \\
+    800 & 0.0018 & 0.033 & 0.036 \\
+    900 & 0.00172 & 0.031 & 0.034 \\
+    1000 & 0.00181 & 0.032 & 0.036 \\
+    1100 & 0.00181 & 0.032 & 0.036 \\
+    1200 & 0.00172 & 0.031 & 0.034 \\
+    1300 & 0.0018 & 0.033 & 0.036 \\
+    1400 & 0.00189 & 0.034 & 0.038 \\
+    1500 & 0.00172 & 0.031 & 0.034 \\
+    1600 & 0.00181 & 0.032 & 0.036 \\
+    1700 & 0.0018 & 0.033 & 0.036 \\
+    1800 & 0.00181 & 0.032 & 0.036 \\
+    1900 & 0.00181 & 0.032 & 0.036 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Přesnost $\text{EASE}^R$ pro různé volby $\lambda$ pro \textit{dataset} s minimálním počtem hodnocení pro uživatele $\#(r_{min}) \ge 3$}
+    \label{tab:EaserRegMeasure}
+\end{table}
+
+%Pro horní omezení \textit{sigmoid} funkce $\sigma_{c_0}$ můžeme upravit výraz $(1-c_0)$
+%na obecnější tvar $(c-c_0)$, kde $c: \mathbb{N}_0 \rightarrow [c_0, 1]$.
+%
+%Mějme $s \in [s_{min}, s_{max}] \subseteq \mathbb{N}_0$ a funkci $\gamma: \mathbb{N}_0 \rightarrow [0, 1]$,
+%potom lze $c$ obecně vyjádřit jako:
+%
+%\begin{equation}
+%    c(s) = \min \left({1, \max\left({c_0, \gamma(s)}\right)} \right).
+%\end{equation}
+%
+%\textbf{Možné volby $\gamma$:}
+%\begin{equation}
+%    \gamma(s) = \left( \frac{\min\left(s, s_{max}\right)-s_{min}}{s_{max}-s_{min}} + c_0 \right)^p,
+%\end{equation}
+%pro $p\in \mathbb{N}_0$
+%
+%\begin{equation}
+%    \gamma(s) = \frac{ e^{ \left( \min\left(s, s_{max}\right)-s_{min} \right)} - 1 }{e^{ \left( s_{max}-s_{min} \right)} - 1} + c_0
+%\end{equation}
+%
+
+%Alternativně lze funkci $\sigma_{c_0}$ vhodně přeškálovat
+%\begin{equation}
+%    \gamma(s) = \max\left(0, \frac{\min\left(s, s_{max}\right)-s_{min}}{s_{max}-s_{min}}\right)
+%\end{equation}
+
+
+
+
+%Uživaleli chceme nabídnout ideálně co možná nejširší spektrum
+%\section{Vývoj preferencí v čase}
+%Další problematiku, kterou jsme zde nerozebrali, ale je také dobré
+%se nad ni zamyslet je fakt, že uživatelské preference se v čase vyvíjejí.
+%Může nás například napadnou otázka, co když si uživatel v naší aplikaci
+%již vytvoří nějaký dobře odpovídající profil a poté bude delší dobu,
+%třeba i několik let, neaktivní. V takovém případě by mohlo dávat
+%smysl celou inicializační fázi zopakovat. Původní profil bychom
+%poté buď kompletně nahradili, nebo bychom mohli provést nejprve
+%podobnostní analýzu a například cosinouvou podobností určit,
+%jak moc se nově inicializovaná data vůči historickým datům
+%liší a na základě toho systém aktualizovat.
+%
+
+
+
+\end{document}

@@ -1,0 +1,38 @@
+/cache/*
+/cache/cons_evaluations/
+/cache/cons_evaluations/**
+/logs/
+**/restaurant_data/dataset/scripts/*
+
+# Local environments / IDE
+venv/
+.venv/
+.vscode/
+__pycache__/
+*.pyc
+
+# Large local evaluation artifacts
+*.log
+*.tmp
+
+# MovieLens raw/derived local data (must be downloaded locally)
+dataset/movies/ml-1m/README
+dataset/movies/ml-32m/README.txt
+dataset/movies/ml-32m/checksums.txt
+dataset/movies/ml-1m/*.dat
+dataset/movies/ml-1m/*.csv
+dataset/movies/ml-32m/*.csv
+dataset/movies/ml-32m/ratings.csv
+dataset/movies/ml-32m/movies.csv
+dataset/movies/ml-32m/tags.csv
+dataset/movies/ml-32m/links.csv
+dataset/movies/ml-32m/genome-scores.csv
+dataset/movies/ml-32m/genome-tags.csv
+dataset/movies/ml-32m/sparse-cached-ml-32m.pkl
+dataset/movies/ml-32m/*.pkl
+movies_data/*.pkl
+movies_data/initialisation_sampling/**/*.pkl
+
+dataset/restaurants/*.json
+ratings_reduced.csv
+movies_reduced.csv

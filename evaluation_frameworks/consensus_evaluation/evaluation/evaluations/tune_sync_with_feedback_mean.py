@@ -1,0 +1,93 @@
+"""
+**Tune — sync + feedback with mean aggregation variant.**
+
+Variant sweep over ``GR_AggregatedProfilesUpdatable`` / mean-style feedback parameters (see class
+``TuneSyncWithFeedbackMean``); companion to EMA-focused tuning.
+"""
+
+from typing import Any, Dict, List, Literal
+
+import pandas as pd
+
+from evaluation_frameworks.consensus_evaluation.evaluation.evaluations.base_experiment import ConsensusExperimentBase
+from evaluation_frameworks.consensus_evaluation.evaluation.evaluations.config import autorun
+from evaluation_frameworks.consensus_evaluation.consensus_algorithm.recommender_engine import RecommendationEngineGroupAllSameEaserWithFeedback
+from evaluation_frameworks.consensus_evaluation.consensus_mediator import ConsensusMediatorSyncApproach
+from evaluation_frameworks.consensus_evaluation.evaluation.evaluations.evaluators.consensus_mediator_factories import (
+    SyncMediatorFactoryBuilderSync,
+)
+from evaluation_frameworks.consensus_evaluation.evaluation.evaluations.evaluators.evaluation_runner import Runner
+from evaluation_frameworks.general_recommender_evaluation.algorithms.group_algorithms.easer_group import (
+    GR_AggregatedProfilesUpdatable,
+)
+from latex_utils.latex_table_generator import LaTeXTableGeneratorSIUnitx
+
+
+class TuneSyncWithFeedbackMean(ConsensusExperimentBase):
+    DEFAULT_EVAL_TYPE: Literal["train", "validation", "test"] = "validation"
+    DEFAULT_W_SIZE = 10
+    DEFAULT_GROUPS_COUNT = 100
+
+    DEFAULT_AGG_STRATEGIES: List[str] = ["mean", "min", "max", "median", "plurality"]
+    DEFAULT_GROUP_TYPES: List[str] = ["similar", "outlier", "random", "divergent", "variance"]
+
+    def __init__(
+        self,
+        *,
+        agg_strategies: List[str] = None,
+        group_types: List[str] = None,
+        **kwargs: Any,
+    ):
+        super().__init__(**kwargs)
+        self.agg_strategies = (
+            agg_strategies if agg_strategies is not None else list(type(self).DEFAULT_AGG_STRATEGIES)
+        )
+        self.group_types = group_types if group_types is not None else list(type(self).DEFAULT_GROUP_TYPES)
+
+    def compute_results(self) -> Dict[str, Dict[str, Any]]:
+        results: Dict[str, Dict[str, Any]] = {gt: {} for gt in self.group_types}
+        for group_type in self.group_types:
+            r = Runner()
+            r.refresh_context(self.eval_type, group_type)
+            for agg_strategy in self.agg_strategies:
+                factory_method = lambda single_user_model, evaluation_set_csr, strat=agg_strategy: (
+                    SyncMediatorFactoryBuilderSync()
+                    .with_group_algorithm(
+                        lambda: GR_AggregatedProfilesUpdatable(single_user_model, update_mode="mean")
+                    )
+                    .with_group_recommender_engine(
+                        lambda group, eg: RecommendationEngineGroupAllSameEaserWithFeedback(group, eg, strat)
+                    )
+                    .with_mediator(
+                        lambda group, gre: ConsensusMediatorSyncApproach(group, self.w_size, gre)
+                    )
+                    .build()
+                )
+                res = r.run(factory_method, self.groups_count, window_size=self.w_size)
+                results[group_type][agg_strategy] = res
+        return results
+
+    def make_table(self, results: dict) -> str:
+        data: Dict[str, Any] = {"Strategy": self.agg_strategies}
+        for gt in self.group_types:
+            col = []
+            for strategy in self.agg_strategies:
+                rfc_value = results[gt][strategy]
+                col.append(rfc_value[0]["average"])
+            data[gt] = col
+        cols = ["Strategy"] + self.group_types
+        df = pd.DataFrame(data)[cols]
+        generator = LaTeXTableGeneratorSIUnitx(
+            df,
+            column_specs=None,
+            column_width=1.5,
+        )
+        return generator.generate_table(
+            caption=r"Srovnání strategií synchronního doporučovače se zpětnou vazbou skrze metriky RFC.",
+            label="tab:strategy_comparison",
+            cell_bold_fn=lambda row_idx, col_idx, val: val == df.iloc[:, col_idx].min(),
+        )
+
+
+if __name__ == "__main__":
+    autorun(TuneSyncWithFeedbackMean)
