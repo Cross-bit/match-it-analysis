@@ -1,8 +1,8 @@
 import sys
 import os
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
-from memory_profiler import profile
 from surprise import Dataset, KNNBasic, Reader
 from utils.config import IMG_OUTPUT_PATH
 from utils.config import load_from_pickle, save_to_pickle
@@ -15,29 +15,40 @@ ratings_matrix: pd.DataFrame = d_loader.load_ratings_matrix()
 
 #region Plotting
 
-def plot_comparison_with_labels(results_user_knn: List[float], results_item_knn: List[float], x_range: range, title: str = "User vs Item KNN Comparison"):
+def plot_comparison_with_labels(results_user_knn: List[float], results_item_knn: List[float], x_range: range, title: str = "Porovnání User KNN a Item KNN"):
     """
     Plots line charts of results_user_knn and results_item_knn with data point labels.
     """
     x = list(x_range)
+    axis_label_size = 22
+    y_axis_label_size = 22
+    tick_label_size = 18
+    value_label_size = 10
+    legend_size = 16
+    title_size = 24
 
     fig, ax = plt.subplots(figsize=(max(10, len(x) * 0.5), 6), dpi=100)
 
     # Plot user_kNN line
-    ax.plot(x, results_user_knn, marker='o', label='User KNN', color='blue')
+    ax.plot(x, results_user_knn, marker='o', label='Uživatelové KNN', color='blue')
     for i, val in enumerate(results_user_knn):
-        ax.text(x[i], val + 0.5, f'{val:.2f}', ha='center', va='bottom', fontsize=8)
+        x_offset = 0.35 if i == 0 else 0.0
+        y_offset = 1.0 if i == 0 else 0.5
+        ax.text(x[i] + x_offset, val + y_offset, f'{val:.2f}', ha='center', va='bottom', fontsize=value_label_size)
 
     # Plot item_kNN line
-    ax.plot(x, results_item_knn, marker='s', label='Item KNN', color='green')
+    ax.plot(x, results_item_knn, marker='s', label='Položkové KNN', color='green')
     for i, val in enumerate(results_item_knn):
-        ax.text(x[i], val - 0.5, f'{val:.2f}', ha='center', va='top', fontsize=8)
+        x_offset = -0.35 if i == 0 else 0.0
+        y_offset = -1.0 if i == 0 else -0.5
+        ax.text(x[i] + x_offset, val + y_offset, f'{val:.2f}', ha='center', va='top', fontsize=value_label_size)
 
-    ax.set_xlabel("Minimal number of user ratings")
-    ax.set_ylabel("Average number of neighbors")
-    ax.set_title(title)
+    ax.set_xlabel("Minimální počet hodnocení uživatelů", fontsize=axis_label_size)
+    ax.set_ylabel("Průměrný počet sousedů", fontsize=y_axis_label_size)
+    ax.set_title(title, fontsize=title_size)
     ax.set_xticks(x)
-    ax.legend()
+    ax.tick_params(axis='both', labelsize=tick_label_size)
+    ax.legend(fontsize=legend_size)
     ax.grid(True)
 
     plt.tight_layout()
@@ -79,9 +90,12 @@ def get_average_test(dataset: Dataset, user_knn: bool, kneighbors_k = 1):
 
     return avg_neighbors
 
-def run_test(min_number_ratings, user_knn = True, runs_count = 3):
+def run_test(min_number_ratings, user_knn = True, runs_count = 1):
     filtered_dataset = remove_users_from_ratings_matrix_by_ratings_count(ratings_matrix, min_number_ratings)
     trainset = get_surprise_trainset(filtered_dataset)
+
+    if runs_count <= 1:
+        return get_average_test(trainset, user_knn)
 
     tmp_res = []
     for i in range(runs_count):
@@ -111,6 +125,23 @@ def run_new_evaluation(x_range: range):
 
     return results_user_knn, results_item_knn
 
+def get_results_with_cache(x_range: range, mode: str):
+    cache_key = "restaurants/hybrid-algorithm/knn/avg_neighbor_knn.pkl"
+    description = "restaurant knn neighbors profile"
+
+    if mode == "load":
+        return load_from_pickle(cache_key, description=description)
+
+    if mode == "compute":
+        return run_new_evaluation(x_range)
+
+    # auto mode: load if possible, otherwise compute and save
+    try:
+        return load_from_pickle(cache_key, description=description)
+    except FileNotFoundError:
+        print("Cache not found, computing fresh results...")
+        return run_new_evaluation(x_range)
+
 
 
 # =================================
@@ -125,15 +156,10 @@ results_user_knn = []
 results_item_knn = []
 
 x_range = range(2, 31)
-load = False
-if (load):
-    results_user_knn, results_item_knn = load_from_pickle(
-        "restaurants/hybrid-algorithm/knn/avg_neighbor_knn.pkl",
-        description="restaurant knn neighbors profile",
-    )
-else:
-    results_user_knn, results_item_knn = run_new_evaluation(x_range)
+parser = argparse.ArgumentParser()
+parser.add_argument("--mode", choices=["auto", "load", "compute"], default="auto")
+args = parser.parse_args()
+results_user_knn, results_item_knn = get_results_with_cache(x_range, args.mode)
 
 
 plot_comparison_with_labels(results_user_knn, results_item_knn, x_range)
-#print(f"Average neighbors count ~ {res_avg}")

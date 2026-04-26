@@ -25,3 +25,12 @@ dataset/
 ```
 
 Legacy dataset paths under `movies_data/dataset/` and `restaurant_data/dataset/` are deprecated.
+
+## Restaurant data ingest source
+
+Restaurant data collection scripts were intentionally removed from this repository.
+Use the dedicated tooling in the application repository (`match-it-demo-backend/tools/data`)
+to fetch/update restaurant source data, then place final JSON outputs into:
+
+- `dataset/restaurants/places.json`
+- `dataset/restaurants/_places.json` (optional backup/intermediate file)

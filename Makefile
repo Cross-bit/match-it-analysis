@@ -12,7 +12,7 @@ groups-generator:
 	python3 -m evaluation_frameworks.consensus_evaluation.synthetic_groups.groups_generator
 
 # =============================
-# TUNNING
+# TUNING
 # =============================
 
 MODE ?= auto # determines whether to recompute the evaluation options: auto, compute, load
@@ -204,10 +204,13 @@ restaurant-reviews-histogram:
 	python3 -m restaurant_data.places_coverage.users_ratings_frequencies
 
 restaurant-algo-comparison:
-	python3 -m restaurant_data.algo_experiments.comparison_of_algorithms
+	python3 -m restaurant_data.algo_experiments.comparison_of_algorithms --min-user-rating $(CB_MIN_USER_RATING) --mode $(MODE)
 
 restaurant-knn-by-test-size:
 	python3 -m restaurant_data.algo_experiments.knn_by_dataset_size
+
+restaurant-knn-neighbors-by-test-size:
+	python3 -m restaurant_data.algo_experiments.knn_neighbors_count_by_test_size --mode $(MODE)
 
 restaurant-knn-parameter-tuning:
 	python3 -m restaurant_data.algo_experiments.knn_parameter_tuning
@@ -221,8 +224,15 @@ restaurant-overlaps-by-test-size:
 restaurant-cb-model-run:
 	python3 -m restaurant_data.algo_experiments.algos.cb_model
 
+CB_MIN_USER_RATING ?= 4
+CB_K ?= 20
+CB_TRAIN_RATIO ?= 0.8
 restaurant-cb-evaluation:
-	python3 -m restaurant_data.algo_experiments.cb_model_precision
+	python3 -m restaurant_data.algo_experiments.cb_model_precision --min-user-rating $(CB_MIN_USER_RATING) --k $(CB_K) --train-ratio $(CB_TRAIN_RATIO) --mode $(MODE)
+
+EASER_LAMBDAS ?= 100 200 400 800 1600 3200 6400
+restaurant-optimal-easer-lambda:
+	python3 -m restaurant_data.algo_experiments.optimal_easer_lambda --mode $(MODE) --regularization-options $(EASER_LAMBDAS)
 
 movie-dataset-stats:
 	python3 -m movies_data.genera_stats

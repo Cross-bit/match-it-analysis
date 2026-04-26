@@ -62,6 +62,3 @@ latex_code = generator.generate_table(
 print(latex_code)
 
 print("")
-#print(f"Total number of values: {number_of_ratings}")
-#print(f"Matrix dims: {num_users} x {num_items}")
-#print(f"Density: {(density) * 100:.2f} %")

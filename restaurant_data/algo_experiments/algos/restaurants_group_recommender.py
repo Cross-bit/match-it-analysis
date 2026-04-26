@@ -29,11 +29,3 @@ class RestaurantGroupRecommender:
             alpha_param (float, optional): _description_. Defaults to 0.2.
         """
         self.alpha = alpha_param
-
-    #def recommend(self, users_ids: List[int]):
-    #    for users_ids
-
-    #def aggregate(self, users_ids: List)
-
-restaurant_recommender = RestaurantGroupRecommender()
-#"UserKNN": UserKnnCFEvaluation(filtered_matrix, k=metric_k, algorithm_k=70, test_size=test_size),

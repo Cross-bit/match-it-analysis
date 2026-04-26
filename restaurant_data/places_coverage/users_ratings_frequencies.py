@@ -49,8 +49,6 @@ def process_place_review(place, review, authors_places) -> Dict:
     else:
         authors_places[author_name] = [place]
 
-    #print(authors_places)
-
 def get_users_reviewed_places_dictionary(places_data: Dict[str, object]) -> Dict:
     """
     Returns dictionary mapping of user name to a list of places user voted for.
@@ -178,31 +176,6 @@ def get_places_with_reviews():
 def get_places_data_with_review(places_data: Dict):
     return {k: v for k, v in places_data.items() if "reviews" in v and v['reviews'] != []}
 
-
-#def aggregate_user_reviews_scraped_data()-> Dict[str, List[str]]:
-#    """
-#    Aggregates user reviews from the scraped data.
-#    Returns a dictionary mapping of user name to a list of places user voted for.
-#    """
-#    data_dir = "../google-places-reviews-scraper/reviews_processed"
-#
-#    reviews_data = os.listdir(data_dir)
-#
-#    authors_places = {}
-#
-#    for place_file in reviews_data:
-#        print(f"Processing reviews of {place_file}")
-#        place_id =  place_file.split('.')[0]
-#        place_reviews = load_json_data(os.path.join(data_dir, place_file))
-#        for review in place_reviews:
-#            process_place_review(place_id, review, authors_places)
-#
-#    return authors_places
-
-
-    plot_users_reviews_count_histogram(authors_places)
-
-
 def store_user_places_percentages(frequencies: Dict[str, list[str]], upper_frequency_limit: int, file_name, print_console: bool = False):
     """
     Stores the user reviews frequencies - meaning how many users have reviewed 1, 2, 3, ... places.
@@ -256,7 +229,6 @@ def categorical_coverage_analysis(aggregated_authors_places: Dict[str, List[obje
     sm = 0
     for key, value in list(aggregated_of_specific_size.items()): #[:10]
         places_categories = list(map(lambda i: i.get("types"), value))
-        #categories_frequencies = { type: 1 for place_cats in places_categories for type in place_cats }
         sm += len(places_categories)
         for place_cats in places_categories:
             for cat in place_cats:

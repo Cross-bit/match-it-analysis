@@ -143,46 +143,6 @@ def plot_histogram_of_results_density_only(densities, celkovy_pocet=-1):
     plt.savefig(os.path.join(IMG_OUTPUT_PATH, "density-only-histogram.pdf"))
     plt.show()
 
-#def plot_histogram_of_results_density_only(densities, celkovy_pocet=-1):
-#    """
-#    Vykreslí histogram hustoty matice (v %), kde každý sloupec odpovídá datasetu
-#    omezenému na uživatele s minimálním počtem hodnocení.
-#    """
-#
-#    import matplotlib.pyplot as plt
-#    import os
-#
-#    if celkovy_pocet <= 0:
-#        celkovy_pocet = len(densities)
-#
-#    if celkovy_pocet > len(densities):
-#        raise ValueError("Požadovaný počet vzorků přesahuje dostupná data.")
-#
-#    hustoty = [d[0] * 100 for d in densities[:celkovy_pocet]]
-#    x = list(range(1, len(hustoty) + 1))
-#
-#    fig, ax = plt.subplots(figsize=(10, 4))
-#    bars = ax.bar(x, hustoty, color=HISTOGRAM_COLOR_1, edgecolor=HISTOGRAM_EDGECOLOR_1, width=0.5)
-#
-#    ax.set_xlabel('Minimální počet hodnocení uživatele', fontsize=AXIS_DESC_SIZE)
-#    ax.set_ylabel('Hustota (%)', fontsize=AXIS_DESC_SIZE)
-#    ax.set_title('Vývoj hustoty datasetu', fontsize=TITLE_SIZE)
-#    ax.set_xticks(x)
-#    ax.tick_params(axis='x', labelsize=AXIS_VALS_SIZE)
-#    ax.tick_params(axis='y', labelsize=AXIS_VALS_SIZE)
-#    ax.set_ylim(0, max(hustoty) + 40)
-#
-#    for bar in bars:
-#        height = bar.get_height()
-#        ax.text(bar.get_x() + bar.get_width() / 2, height + 0.5,
-#                f'{height:.1f}%', ha='center', va='bottom',
-#                fontsize=10, rotation=45)
-#
-#    plt.tight_layout()
-#    plt.savefig(os.path.join(IMG_OUTPUT_PATH, "density-and-numbers.pdf"))
-#    plt.show()
-
-
 def plot_histogram_of_results2(densities: List[Tuple[float, pd.DataFrame]]):
     """ Plots 2 histograms under each other: density, left places count"""
 
@@ -415,4 +375,3 @@ ratings_matrix: pd.DataFrame = d_loader.load_ratings_matrix()
 densities = find_densities(ratings_matrix)
 
 plot_histogram_of_results_density_only(densities, 15)
-# plot_histogram_of_results3(densities)

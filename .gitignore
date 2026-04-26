@@ -2,7 +2,6 @@
 /cache/cons_evaluations/
 /cache/cons_evaluations/**
 /logs/
-**/restaurant_data/dataset/scripts/*
 
 # Local environments / IDE
 venv/
@@ -14,6 +13,10 @@ __pycache__/
 # Large local evaluation artifacts
 *.log
 *.tmp
+/*.pkl
+eval_notify.sh
+export_full_rfc_csv.sh
+get_large_grps.sh
 
 # MovieLens raw/derived local data (must be downloaded locally)
 dataset/movies/ml-1m/README

@@ -14,22 +14,28 @@ ratings_matrix: pd.DataFrame = d_loader.load_ratings_matrix()
 ratings_matrix = (ratings_matrix > 0).astype(int)
 
 #region Plotting
-def plot_overlap_counts(overlap_counts: list, title: str = "Item-Item Overlap Counts"):
+def plot_overlap_counts(overlap_counts: list, title: str = "Počet překryvů mezi položkami"):
     x = list(range(1, len(overlap_counts) + 1))
+    axis_label_size = 22
+    y_axis_label_size = 17
+    tick_label_size = 17
+    value_label_size = 10
+    title_size = 24
 
     fig, ax = plt.subplots(figsize=(max(10, len(x) * 0.5), 6), dpi=100)
 
-    ax.plot(x, overlap_counts, marker='o', label='Item-Item Overlaps', color='purple')
+    ax.plot(x, overlap_counts, marker='o', label='Překryvy mezi položkami', color='purple')
 
     # Dynamic label positioning to avoid floating too far away
     for i, val in enumerate(overlap_counts):
-        ax.text(x[i], val + 0.5, f'{val}', ha='center', va='bottom', fontsize=8)
+        ax.text(x[i], val + 0.5, f'{val}', ha='center', va='bottom', fontsize=value_label_size)
 
-    ax.set_xlabel("Minimal number of user ratings")
-    ax.set_ylabel("# of item-item pairs with >1 overlap")
+    ax.set_xlabel("Minimální počet hodnocení uživatelů", fontsize=axis_label_size)
+    ax.set_ylabel("Počet dvojic položek s více než 1 překryvem", fontsize=y_axis_label_size)
     ax.set_ylim(0, max(overlap_counts) + 3)
-    ax.set_title(title)
+    ax.set_title(title, fontsize=title_size)
     ax.set_xticks(x)
+    ax.tick_params(axis='both', labelsize=tick_label_size)
     ax.grid(True)
 
     plt.tight_layout()

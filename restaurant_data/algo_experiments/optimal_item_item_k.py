@@ -97,10 +97,6 @@ else:
         for min_ratings in min_number_of_ratings_options
     )
 
-    #for min_number_of_ratings in min_number_of_ratings_options:
-    #    result = parameter_test(metric_k, regularization_options, min_number_of_ratings)
-    #    measures.append(result)
-
     save_to_pickle(measures, cache_file, description="restaurant item-knn sweep")
 
 #

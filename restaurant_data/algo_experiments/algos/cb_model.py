@@ -141,11 +141,9 @@ class SimpleCBModel():
 
 if __name__ == "__main__":
     data_loader = DatasetLoader()
-    raw_data = data_loader.load_data_raw()
     ratings_matrix = data_loader.load_ratings_matrix()
     print(ratings_matrix)
     data_source = Local_CB_DataSource(1)
     cb_model = SimpleCBModel(data_source)
     recs = cb_model.recommend(42, 5)
-    #recs = cb_model.recommend_by_user_name('Alicia', 5)
     print(recs)

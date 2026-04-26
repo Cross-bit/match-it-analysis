@@ -47,11 +47,11 @@ eval-phased — two-phase window run (phase1 then all 7 modules on PHASE2_W). En
 
 eval-debug-one — one module + debug profile + NDCG table from latest pickle. Env: MODULE, W, …
 
-eval-suite — run 7 modules once (default W=10) with optional eval_notify.sh logging. Options: --mode, --w, --group-count, --git
+eval-suite — run 7 modules once (default W=10). Options: --mode, --w, --group-count, --git
 
 sync-gcp — rsync this repo tree to a remote host (personal convenience; override with SYNC_* env).
 
-notify helper (unchanged): ./eval_notify.sh
+notify helper (optional, local-only): ./eval_notify.sh
 USAGE
 }
 
@@ -687,8 +687,11 @@ cmd_eval_suite() {
     esac
   done
 
-  if [[ ! -x "$NOTIFY" ]]; then
-    echo "Warning: $NOTIFY not executable." >&2
+  local USE_NOTIFY=false
+  if [[ -x "$NOTIFY" ]]; then
+    USE_NOTIFY=true
+  else
+    echo "Info: notify helper not found, running without notifications." >&2
   fi
 
   local JOBS=(
@@ -734,10 +737,12 @@ cmd_eval_suite() {
       note="$label failed (mode=$MODE)"
     fi
 
-    if $DO_GIT; then
-      "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note" -g
-    else
-      "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note"
+    if $USE_NOTIFY; then
+      if $DO_GIT; then
+        "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note" -g
+      else
+        "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note"
+      fi
     fi
 
     echo "⏱  duration: ${dur_s}s | exit code: $code | status: $status"

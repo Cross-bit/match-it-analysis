@@ -2,17 +2,13 @@
 from dataclasses import dataclass
 import os
 import sys
+import argparse
+from typing import Dict, List
 from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from  evaluation_frameworks.general_recommender_evaluation.algorithms.easer import EaserEvaluation
-#from  evaluation_frameworks.general_recommender_evaluation.algorithms.easer_user_based import EaserUserBasedPrecisionEvaluation
-from  evaluation_frameworks.general_recommender_evaluation.algorithms.baseline import PopularityEvaluation
-from  evaluation_frameworks.general_recommender_evaluation.algorithms.svd import SVDPrecisionEvaluation
-from  evaluation_frameworks.general_recommender_evaluation.algorithms.item_knn import ItemItemCFEvaluation
-from  evaluation_frameworks.general_recommender_evaluation.algorithms.user_knn import UserKnnCFEvaluation
-from latex_utils.latex_table_generator import LaTeXTableGenerator, LaTeXTableGeneratorSIUnitx
+from latex_utils.latex_table_generator import LaTeXTableGeneratorSIUnitx
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dataset.data_access import *
@@ -21,83 +17,14 @@ from dataset.data_access import *
 # DESCRIPTION
 # ===================================
 # Finds optimal lambda for the easer algorithm.
-# Output: table/plot
+# Output: table
 #
 
 
-from utils.config import IMG_OUTPUT_PATH, load_from_pickle, save_to_pickle
+from utils.config import load_from_pickle, save_to_pickle
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dataset.data_access import *
-
-#region plotting
-def plot_result_precision(results):
-    # Extract data
-    ks = [k for k, _ in results]
-    precision = [v['precision@K'] for _, v in results]
-    recall = [v['recall@K'] for _, v in results]
-    ndcg = [v['ndcg@K'] for _, v in results]
-
-    # Plot
-    plt.figure(figsize=(10, 6))
-    plt.plot(ks, precision, marker='^', label='Precision@K')
-    #plt.plot(ks, recall, marker='^', label='Recall@K')
-    #plt.plot(ks, ndcg, marker='^', label='NDCG@K')
-
-    plt.xlabel('K')
-    plt.ylabel('Metric Value')
-    plt.title('Evaluation precision')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(os.path.join(IMG_OUTPUT_PATH, "optimal-regularisation-easer_precision.pdf"))
-    plt.show()
-
-def plot_result_ndcg(results):
-    # Extract data
-    ks = [k for k, _ in results]
-    #precision = [v['precision@K'] for _, v in results]
-    #recall = [v['recall@K'] for _, v in results]
-    ndcg = [v['ndcg@K'] for _, v in results]
-
-    # Plot
-    plt.figure(figsize=(10, 6))
-    plt.plot(ks, ndcg, marker='^', label='Precision@K')
-    #plt.plot(ks, recall, marker='^', label='Recall@K')
-    #plt.plot(ks, ndcg, marker='^', label='NDCG@K')
-
-    plt.xlabel('K')
-    plt.ylabel('Metric Value')
-    plt.title('Evaluation ndcg')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(os.path.join(IMG_OUTPUT_PATH, "optimal-regularisation-recall.pdf"))
-    plt.show()
-
-def plot_result_recall(results):
-    # Extract data
-    ks = [k for k, _ in results]
-    precision = [v['precision@K'] for _, v in results]
-    recall = [v['recall@K'] for _, v in results]
-    ndcg = [v['ndcg@K'] for _, v in results]
-
-    # Plot
-    plt.figure(figsize=(10, 6))
-    #plt.plot(ks, precision, marker='^', label='Precision@K')
-    plt.plot(ks, recall, marker='^', label='Recall@K')
-    #plt.plot(ks, ndcg, marker='^', label='NDCG@K')
-
-    plt.xlabel('K')
-    plt.ylabel('Metric Value')
-    plt.title('Evaluation recall')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(os.path.join(IMG_OUTPUT_PATH, "optimal-regularisation-recall.pdf"))
-    plt.show()
-
-#endregion
 
 #
 # Data load + helpers
@@ -160,7 +87,6 @@ def parameter_test(precision_k, regularization_options: List, min_number_of_rati
 #
 
 metric_k = 20 # the @k value from evaluation
-regularization_options = [_ for _ in range(100, 2000, 100)]
 measures: List[ExperimentResults] = []
 
 min_number_of_ratings_options = [4] # leaving users with specific counts of stars
@@ -169,17 +95,36 @@ min_number_of_ratings_options = [4] # leaving users with specific counts of star
 # Generate (or load) data
 #
 
-load = False
 cache_file = "restaurants/hybrid-algorithm/easer/precision_measures.pkl"
-if (load):
+parser = argparse.ArgumentParser()
+parser.add_argument("--mode", choices=["auto", "load", "compute"], default="auto")
+parser.add_argument(
+    "--regularization-options",
+    type=int,
+    nargs="+",
+    default=[100, 200, 400, 800, 1600, 3200, 6400],
+)
+args = parser.parse_args()
+regularization_options = args.regularization_options
+
+if args.mode == "load":
     measures = load_from_pickle(cache_file, description="restaurant easer precision measures")
-else:
+elif args.mode == "compute":
     measures = Parallel(n_jobs=1)(
         delayed(parameter_test)(metric_k, regularization_options, min_ratings)
         for min_ratings in min_number_of_ratings_options
     )
-
     save_to_pickle(measures, cache_file, description="restaurant easer precision measures")
+else:
+    try:
+        measures = load_from_pickle(cache_file, description="restaurant easer precision measures")
+    except FileNotFoundError:
+        print("Cache not found, computing fresh EASER lambda sweep...")
+        measures = Parallel(n_jobs=1)(
+            delayed(parameter_test)(metric_k, regularization_options, min_ratings)
+            for min_ratings in min_number_of_ratings_options
+        )
+        save_to_pickle(measures, cache_file, description="restaurant easer precision measures")
 
 
 #
@@ -188,7 +133,6 @@ else:
 
 def generate_table(measure: ExperimentResults, min_user_rating: int, regularisation_parameters: List[str]):
     datapoints = measure.result
-    params = measure.parameters
     print(datapoints)
     precision = [v['precision@K'] for _, v in datapoints]
     recall = [v['recall@K'] for _, v in datapoints]

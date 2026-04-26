@@ -3,6 +3,7 @@ set -uo pipefail
 
 # ---- Konfigurace ----
 NOTIFY="./eval_notify.sh"
+USE_NOTIFY=false
 DO_GIT=true                 # když --git, předá se -g do notify
 MODE="compute"              # defaultní --mode
 W_SIZE=10
@@ -35,8 +36,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 
-if [[ ! -x "$NOTIFY" ]]; then
-  echo "Warning: $NOTIFY not executable." >&2
+if [[ -x "$NOTIFY" ]]; then
+  USE_NOTIFY=true
+else
+  echo "Info: notify helper not found, running without notifications." >&2
 fi
 
 JOBS=(
@@ -86,10 +89,12 @@ run_one() {
   fi
 
   # Notifications
-  if $DO_GIT; then
-    "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note" -g
-  else
-    "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note"
+  if $USE_NOTIFY; then
+    if $DO_GIT; then
+      "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note" -g
+    else
+      "$NOTIFY" "$label" "$status" -c "$code" -s "$start_iso" -e "$end_iso" -d "$dur_s" -n "$note"
+    fi
   fi
 
   echo "⏱  duration: ${dur_s}s | exit code: $code | status: $status"

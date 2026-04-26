@@ -303,7 +303,8 @@ class EaserEvaluation(SurpriseRatingBasedEvaluation):
         super().__init__(rating_matrix, test_size, rating_scale)
 
     def fit(self):
-        ratings_df = pd.DataFrame(self.train_matrix)
+        # train_matrix is scipy.sparse.dok_matrix in current evaluation pipeline
+        ratings_df = pd.DataFrame(self.train_matrix.toarray())
 
         easer = EaserBase(self.regularization)
         easer.fit(ratings_df)

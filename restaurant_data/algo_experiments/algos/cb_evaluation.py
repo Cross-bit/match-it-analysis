@@ -21,6 +21,7 @@ class CBModelEvaluation:
 
     def evaluate(self):
         precisions, recalls, ndcgs = [], [], []
+        total_items = len(self.model.data_source.restaurants_data)
 
         for user_name in self.rating_matrix.index:
             user_row = self.rating_matrix.loc[user_name]
@@ -38,9 +39,16 @@ class CBModelEvaluation:
             user_vector = self.create_user_vector_from_train(train_items)
 
             try:
-                recs_df = self.model.data_source.find_similar(user_vector.reshape(1, -1), self.k)
+                # Ask for a larger candidate pool and then remove known train items.
+                # Otherwise top-K can be dominated by already seen places and unfairly
+                # suppress true test hits.
+                recs_df = self.model.data_source.find_similar(user_vector.reshape(1, -1), total_items)
             except Exception as e:
                 print(f"User {user_name} skipped: {e}")
+                continue
+
+            recs_df = recs_df[~recs_df.index.isin(train_items.index)].head(self.k)
+            if recs_df.empty:
                 continue
 
             rec_items = recs_df.index.tolist()
@@ -86,59 +94,3 @@ class CBModelEvaluation:
 
     def safe_mean(self, values):
         return float(np.mean(values)) if len(values) > 0 else 0.0
-
-
-#class CBModelEvaluation:
-#    def __init__(self, rating_matrix, model, k=10):
-#        """
-#        Args:
-#            rating_matrix (pd.DataFrame): users x items matrix (0 or rating)
-#            model (SimpleCBModel): model with .recommend(user_id, top_k)
-#            k (int): top-k to evaluate. Default k=10.
-#        """
-#        self.rating_matrix = rating_matrix
-#        self.model = model
-#        self.k = k
-#
-#    def evaluate(self):
-#        precisions, recalls, ndcgs = [], [], []
-#
-#        for user_name in self.rating_matrix.index:
-#            user_row = self.rating_matrix.loc[user_name]
-#            ground_truth = set(user_row[user_row > 0].index)
-#
-#            if not ground_truth:
-#                continue
-#
-#            try:
-#                recs = self.model.recommend_by_user_name(user_name, self.k)
-#            except Exception as e:
-#                print(f"User {user_name} skipped: {e}")
-#                continue
-#
-#            rec_items, rec_scores = zip(*recs)
-#
-#            # find number of positive recommendations
-#            hits = set(rec_items) & ground_truth
-#
-#            # the actual count in top-k
-#            precision = len(hits) / self.k
-#            # the actual count in all
-#            recall = len(hits) / len(ground_truth)
-#
-#            # sorting by the similarity -> find the relevance
-#            rel = [1 if item in ground_truth else 0 for item in rec_items]
-#            ndcg = ndcg_score([rel], [rec_scores]) if rel else 0.0
-#
-#            precisions.append(precision)
-#            recalls.append(recall)
-#            ndcgs.append(ndcg)
-#
-#        return {
-#            f"precision@{self.k}": self.safe_mean(precisions),
-#            f"recall@{self.k}": self.safe_mean(recalls),
-#            f"ndcg@{self.k}": self.safe_mean(ndcgs)
-#        }
-#
-#    def safe_mean(self, values):
-#        return float(np.mean(values)) if len(values) > 0 else 0.0

@@ -1,71 +1,125 @@
-# Analysis Directory
+# Analysis Workspace
 
-This is primarily a Python project designed to test and analyze data for a recommendation system.
+Analytická část projektu pro evaluaci doporučovacích algoritmů (movies + restaurants + consensus experiments).
 
-## Execution
+## Quick Start
 
-💡 Use the attached *Makefile* in the root directory to run various evaluations.
-Refer to the file for details on the available commands.
+Spouštění je standardně přes `Makefile`:
 
-For example:
-
-```
+```bash
 make restaurant-algo-comparison
 ```
 
-## Output
+Výstupy jsou typicky:
+- grafy uložené do `img/` (většinou `.pdf`),
+- LaTeX tabulky vypsané do stdout,
+- cache artefakty v `cache/`.
 
-The typical output is a chart plotted using the *matplotlib.pyplot* library.
+## Nejčastější příkazy
 
-⚙️ **Note**: Some systems may require additional configuration or script adjustments.
-This setup has been tested on Windows 11 with WSL.
+### Restaurant
 
-📌 **Important**: Since the analysis is intended for use in a *LaTeX* project, the scripts automatically attempt to save generated images as **.pdf** files in the parent directory's **img/** folder.
-Ensure this directory exists, **or** update the `IMG_OUTPUT_PATH` constant in `utils/config.py`.
+```bash
+# CF porovnání algoritmů (EASE, Popularity, ItemKNN, UserKNN, SVD)
+make restaurant-algo-comparison
 
-📌 **Caching**: All cached outputs should go to the shared directory `analysis/cache/`.
-Use `utils.config` helpers (`load_or_build_pickle`, `load_from_pickle`, `save_to_pickle`, `cache_path`) and avoid storing `.pkl` files next to scripts.
+# totéž pro jiný filtr uživatelů (r_min)
+make CB_MIN_USER_RATING=3 restaurant-algo-comparison
 
-### Cache Layout (organized namespaces)
+# CB evaluace
+make restaurant-cb-evaluation
+make CB_MIN_USER_RATING=4 CB_K=20 CB_TRAIN_RATIO=0.8 restaurant-cb-evaluation
+
+# KNN sousedi (graf G.2)
+make restaurant-knn-neighbors-by-test-size
+
+# Item overlap (graf G.1)
+make restaurant-overlaps-by-test-size
+
+# EASE lambda sweep (tabulka G.1)
+make restaurant-optimal-easer-lambda
+make MODE=compute EASER_LAMBDAS="100 200 400 800 1600 3200 6400 12800 25600" restaurant-optimal-easer-lambda
+```
+
+### Consensus
+
+```bash
+make consensus-eval-dataset-gen
+make tune_sync_with_feedback_ema
+make eval_sync_with_feedback_ema
+make plot_success_rate_by_bias
+```
+
+### Movies
+
+```bash
+make movie-dataset-stats
+make movie-dataset-genre-frequencies
+make movie-popularity-histogram
+make movie-knn-algo-comparison
+```
+
+## MODE přepínač (cache workflow)
+
+Vybrané skripty podporují:
+- `MODE=auto` (default): load cache, jinak compute + save
+- `MODE=load`: pouze načíst cache
+- `MODE=compute`: vždy přepočítat a přepsat cache
+
+Příklad:
+
+```bash
+make MODE=compute restaurant-algo-comparison
+```
+
+## Cache pravidla
+
+Všechny průběžné artefakty mají být v `cache/`, ne v rootu projektu.
+
+Používej helpery z `utils/config.py`:
+- `load_or_build_pickle`
+- `load_from_pickle`
+- `save_to_pickle`
+- `cache_path`
+
+Doporučené namespace větve:
 
 ```text
 cache/
-  cons_evaluations/                 # consensus evaluation outputs
+  cons_evaluations/
   movies/
-    init-sampling/                  # init sampling outputs and summaries
-      kmeans/                       # kmeans-related caches
-    algorithm/
-      easer/                        # EASER tuning/eval caches
-    links-filtering/                # mapping/cleaning/dedup related caches
   restaurants/
-    hybrid-algorithm/               # restaurant algorithm sweeps and related caches
-      easer/
-      item-knn/
-      knn/
-      sparsity/
 ```
 
-When adding a new cache file, place it under the matching domain branch (`movies/...`, `restaurants/...`, or `cons_evaluations/...`) so it is obvious what produced it.
-Avoid writing unnamed files directly under `cache/`.
+## Rejstřík Skriptů (CZ, pro elektronickou přílohu)
 
-For detailed consensus results layout, see:
-`evaluation_frameworks/consensus_evaluation/evaluation/evaluations/RESULT_CACHE_LAYOUT.md`
+### Restaurant – hlavní
+- `restaurant_data/algo_experiments/comparison_of_algorithms.py`  
+  CF porovnání algoritmů, výstupem je LaTeX tabulka.
+- `restaurant_data/algo_experiments/cb_model_precision.py`  
+  Evaluace `Simple CB`, výstupem je LaTeX tabulka.
+- `restaurant_data/algo_experiments/knn_neighbors_count_by_test_size.py`  
+  Analýza průměrného počtu sousedů (`UserKNN` vs `ItemKNN`), výstup graf.
+- `restaurant_data/sparsity_issue/overlaps_by_dataset_size.py`  
+  Analýza překryvů položek dle filtru uživatelů, výstup graf.
+- `restaurant_data/algo_experiments/optimal_easer_lambda.py`  
+  Sweep regularizace `lambda` pro `EASE^R`, výstup tabulka.
 
----
+### Consensus – hlavní
+- `evaluation_frameworks/consensus_evaluation/evaluation/evaluations/tune_*.py`  
+  Ladění parametrů variant konsensu.
+- `evaluation_frameworks/consensus_evaluation/evaluation/evaluations/eval_*.py`  
+  Finální evaluace variant.
+- `evaluation_frameworks/consensus_evaluation/evaluation/evaluations/print/*.py`  
+  Exporty tabulek/grafů pro text práce.
 
-Some scripts may output only LaTeX-formatted tables or other statistics directly to the standard output.
+### Movies – hlavní
+- `movies_data/algo_experiments/comparison_of_algorithms.py`
+- `movies_data/genres_coverage_frequencies.py`
+- `movies_data/popularity_histogram.py`
+- `movies_data/production_filtering/filter_dataset.py`
 
----
+## Poznámky k čistotě
 
-## Directory Structure
-
-```
-project-root/
-├── evaluation_framework/    # Evaluation framework and basic recommendation algorithms
-├── latex_utils/             # Helper functions for LaTeX generation (e.g., table creation)
-├── math_analysis/           # Mathematical function analysis
-├── movies_data/             # Analysis of the MovieLens 1M dataset
-├── restaurant_data/         # Analysis of restaurant data fetched using Google APIs
-├── utils/                   # General utilities (e.g., configuration)
-└── orchestration/           # (Not supported yet) Scripts for automated text editing
-```
+- Lokální helper shell skripty (`eval_notify.sh`, `export_full_rfc_csv.sh`, `get_large_grps.sh`) nejsou součástí verzované části.
+- Root `.pkl` artefakty nejsou povoleny (patří do `cache/`).
