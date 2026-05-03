@@ -3,6 +3,9 @@
 /cache/cons_evaluations/**
 /logs/
 
+# Removed nested repo; do not re-add as submodule path
+log_repo/
+
 # Local environments / IDE
 venv/
 .venv/
