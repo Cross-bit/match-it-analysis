@@ -1,5 +1,4 @@
 #!/bin/python3
-#find_missing_tmdb_ids.py
 
 import os
 import csv

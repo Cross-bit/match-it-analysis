@@ -2,7 +2,6 @@
 import numpy as np
 from sklearn.discriminant_analysis import StandardScaler
 import skfuzzy as fuzz
-#from clustering.representation import *
 from movies_data.initialisation_sampling.clustering.representation import *
 
 # ====================================

@@ -115,7 +115,6 @@ def plot_users_reviews_count_histogram(reviews_frequencies: List[int], max_sampl
 
     plt.xlim(x[0] - 2.9, x[-1] + 2.9)
     plt.ylim(top=(10**5)/2.35)
-    #plt.xlim(x[0] - 2.4, x[-1] + 2.4)
 
     # Čísla nad sloupci
     for i, xpos in enumerate(x):
@@ -298,7 +297,6 @@ def plot_histogram_of_results(sparsities: List[Tuple[float, pd.DataFrame]]):
         axes[1].text(x[i], count + 0.3, str(count), ha='center', va='bottom', fontsize=8)
 
     plt.tight_layout()
-    # plt.savefig(os.path.join(IMG_OUTPUT_PATH, "histogram-of-user-reviews-all.pdf"))
     plt.show()
 
 #endregion

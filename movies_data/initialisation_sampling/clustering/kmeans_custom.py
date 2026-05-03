@@ -4,7 +4,6 @@ from abc import ABC
 from scipy.stats import pearsonr
 import numpy as np
 
-#from clustering.representation import *
 from movies_data.initialisation_sampling.clustering.representation import *
 
 # ====================================

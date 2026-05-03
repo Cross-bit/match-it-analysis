@@ -125,29 +125,3 @@ class LaTeXTableGeneratorSIUnitx:
             lines.append(f"\\label{{{label}}}")
         lines.append("\\end{table}")
         return "\n".join(lines)
-
-#
-# Example usage
-#
-#data = {
-#    "Efekt": ["Abs. člen", "Pohlaví (muž)", "Výška (cm)"],
-#    "Odhad": [-10.01, 9.89, 0.78],
-#    "Směrod. chyba": [1.01, 5.98, 0.12],
-#    "P-hodnota": ["\\mc{---}", 0.098, "<0,001"]
-#}
-#
-#df = pd.DataFrame(data)
-#
-#generator = LaTeXTableGenerator(
-#    df,
-#    column_specs=[(3, 2), (1, 2), (2, 3)]  # odpovídá D{.}{,}{3.2} atd.
-#)
-#
-#latex_code = generator.generate_table(
-#    caption="Maximálně věrohodné odhady v~modelu M.",
-#    label="tab03:Nejaka",
-#    note="\\textit{Pozn:} $^a$ Směrodatná chyba odhadu metodou Monte Carlo."
-#)
-#
-## Print or save the result
-#print(latex_code)

@@ -1,7 +1,6 @@
 #!/bin/python3
 from surprise import BaselineOnly, Dataset, Reader
 import random
-#from clustering.representation import *
 from movies_data.initialisation_sampling.clustering.representation import *
 
 # ====================================

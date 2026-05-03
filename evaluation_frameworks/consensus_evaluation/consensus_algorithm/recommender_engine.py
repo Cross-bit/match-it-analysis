@@ -626,23 +626,3 @@ class RecommendationEngineGroupAllSameEaserWithFeedback(GroupRecommendationEngin
                 out[uid] = mapped
 
         return out
-
-
-# --- Usage sketch (commented): same group recommendation for all members ---
-# Not executed when this file is imported. Copy into a script or REPL if needed.
-#
-# from dataset.data_access import MovieLensDatasetLoader
-# from evaluation_frameworks.general_recommender_evaluation.algorithms.group_algorithms.easer_group import (
-#     GR_AggregatedRecommendations,
-# )
-#
-# d_loader = MovieLensDatasetLoader()
-# _, ratings_matrix = d_loader.load_data(True)
-# group_model = GR_AggregatedRecommendations()
-# group_model.fit(ratings_matrix)
-# user_ids = [42, 24, 5, 6]
-# rec_engine = RecommendationEngineGroupAllSameEaser(user_ids, ratings_matrix, group_model)
-# rec_engine.recommend_next_k(42, 5)  # same slate for other members in that round
-# rec_engine.recommend_next_k(24, 5)
-# rec_engine.reset_iteration([42, 24], agg_strategy="median")
-

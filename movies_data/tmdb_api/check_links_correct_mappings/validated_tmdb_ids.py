@@ -1,5 +1,4 @@
 #!/bin/python3
-#validate_tmdb_ids.py
 
 import csv
 import os
@@ -33,7 +32,6 @@ RATE_LIMIT_DELAY = 0.25  # ~4 req/s (bezpečné)
 TIMEOUT = 10
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-#print(SCRIPT_DIR)
 
 def load_tmdb_ids(csv_path: str) -> List[int]:
     tmdb_ids = []

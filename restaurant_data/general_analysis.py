@@ -41,7 +41,7 @@ df = pd.DataFrame({
         f"{num_items}",
         f"{nonzero_count:,}",
         f"{total_pairs:,}",
-        f"{density:.2f} \%",
+        f"{density:.2f} \\%",
         f"{avg_ratings_per_user:.2f}",
         f"{avg_ratings_per_item:.2f}"
     ]

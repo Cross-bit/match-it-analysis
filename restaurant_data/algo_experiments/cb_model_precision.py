@@ -64,7 +64,7 @@ generator = LaTeXTableGeneratorSIUnitx(
 )
 
 print(generator.generate_table(
-    caption=f"Porovnání jednotlivých algoritmů na \\textit{{datasetu}} restaurací pro $\\#(r_{{min}}) \ge {min_user_rating}$.",
+    caption=f"Porovnání jednotlivých algoritmů na \\textit{{datasetu}} restaurací pro $\\#(r_{{min}}) \\ge {min_user_rating}$.",
     label="tab:AlgosComparisionTextTable",
 ))
 

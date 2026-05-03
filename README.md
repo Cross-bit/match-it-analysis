@@ -1,6 +1,7 @@
 # Analysis Workspace
 
-Analytická část projektu pro evaluaci doporučovacích algoritmů (movies + restaurants + consensus experiments).
+Analytická část projektu pro evaluaci doporučovacích algoritmů 
+(movies + restaurants + consensus experiments).
 
 ## Quick Start
 

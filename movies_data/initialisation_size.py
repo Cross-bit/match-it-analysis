@@ -12,12 +12,10 @@ from sklearn.cluster import DBSCAN
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import silhouette_score
 import numpy as np
-#from load_dataset import *
 from sklearn.neighbors import NearestNeighbors
 import time
 import copy
 
-#from load_dataset import *
 from dataset.data_access import MovieLensDatasetLoader
 from utils.config import (
     AXIS_DESC_SIZE,
@@ -165,10 +163,6 @@ def proceed_evaluation_rmse(ratings_mx_df: pd.DataFrame, user_id: int, k: int):
     predictions = predictions[test_movies]
     return rmse(ratings_mx_df, user_id, predictions, train_movies, test_movies)
 
-    # Number of possible recommendation items (number of items rated by the user \intersect items rated by neighbors)
-    #candidates_count = counter_number_of_positives(mx_df, similar_users, test_movies)
-    #return candidates_count
-
 # endregion evaluation
 def find_accuracies(ratings_mx_df, k, min_ratings_threshold, users_sample_size) ->List[float]:
     """ Evaluates accuracy using RMSE for random users with k ratings.
@@ -252,15 +246,6 @@ def add_plot(sub_plot, rmse_stat: List, param_range, window_size = 10):
 
 param_range, rmse_stat = run_sampling(ratings_mx_df, "results_single2.pkl", load=True)
 param_range_pop, rmse_stat_pop = run_sampling(ratings_mx_df_pop, "results_popularity2.pkl", load=True)
-
-#fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(10, 12), dpi=100)
-#add_plot(axes[0], rmse_stat, param_range)
-#add_plot(axes[1], rmse_stat_pop, param_range_pop)
-#plt.tight_layout()
-#plt.savefig("../../../img/init_sample_size_accuracy_both_sep.pdf")
-#plt.show()
-
-# Plot original values
 
 plt.figure(figsize=(10, 6), dpi=100)
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#filter_repaired_ids.py
 
 import csv
 import re

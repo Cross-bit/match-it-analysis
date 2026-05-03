@@ -6,7 +6,6 @@ from sklearn.cluster import KMeans
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
-#from representation_ import *
 from utils.config import AXIS_DESC_SIZE, AXIS_VALS_SIZE, TITLE_SIZE, IMG_OUTPUT_PATH
 from movies_data.initialisation_sampling.clustering.representation import get_movies_representation_ml1
 
@@ -54,7 +53,7 @@ plt.yticks(fontsize=AXIS_VALS_SIZE)
 
 plt.savefig(os.path.join(IMG_OUTPUT_PATH, "clustering-silueth-score.pdf"))
 plt.show()
-#exit()
+
 def compute_inertia(k, data):
     print(f"Executing kmeans for {k}")
     kmeans = KMeans(n_clusters=k, random_state=42)

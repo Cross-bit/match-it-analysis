@@ -1,5 +1,4 @@
 #!/bin/python3
-#resolve_missing_tmdb_ids.py
 
 import csv
 import argparse

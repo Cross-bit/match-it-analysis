@@ -152,11 +152,6 @@ class STSGroupIndividualPriority(PriorityFunction):
         return base
 
 
-#class SimplePriorityFunctionWithRandom(SimplePriorityFunction):
-#    def get_priority(self, user_id: int, item_id: int, context: RedistributionContext) -> float:
-#        pass
-
-
 class RedistributionUnit(RedistributionContext):
 
     def __init__(self, users_ids: List[int], priority_function: PriorityFunction):

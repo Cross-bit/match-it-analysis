@@ -9,7 +9,6 @@ import pickle
 import os
 from utils.config import cache_path
 
-#from clustering.representation import *
 from movies_data.initialisation_sampling.clustering.representation import *
 
 popularity_threshold = 40
@@ -355,96 +354,3 @@ def run_sample_evaluation(number_of_samples = 24):
     samples = sample_movies_from_rating_clusters(ratings_df, labels, num_samples=number_of_samples)
 
     return samples
-
-
-#final_result = sample_movies_from_rating_clusters_pool(ratings_df, labels, num_samples=24, rating_pool_size=100)
-#final_result = custom_correlation_kmeans(ratings_zeroed_df, 17)
-#with open(file_name, 'wb') as f:
-#    pickle.dump(final_result, f)
-#
-#labels = final_result['labels']
-#
-#samples = sample_movies_from_rating_clusters(ratings_df, labels, num_samples=24)
-#print("Sampled movie IDs:", samples)
-#
-#popularity = test_sampled_movies_popularity(samples, ratings_df)
-#coverage = test_sampled_movies_coverage(samples, ratings_df)
-#all_genres = get_unique_genres(movies_df)
-#normed_entropy = genre_entropy(samples, movies_df) / np.log2(len(all_genres))
-#
-#result = {
-#"CustomMethod": {
-#    "popularity": popularity,
-#    "coverage": coverage,
-#    "norm_entropy": normed_entropy
-#    }
-#}
-#
-#precision = evaluate_precision_at_k(ratings_zeroed_df, list(samples), k=5, threshold=3.5)
-#print(f"Global Precision@5: {precision:.4f}")
-#
-#plot_aggregated_results(result)
-#
-
-
-##|
-##| EVALUATION TO CLUSTERING
-##|
-##|
-
-
-#import pandas as pd
-#from surprise import Dataset, Reader, BaselineOnly
-#from surprise.model_selection import train_test_split
-#from collections import defaultdict
-#
-## --- Convert to Surprise format ---
-## Melt DataFrame to long format: userId, movieId, rating
-#long_df = ratings_zeroed_df.reset_index().melt(id_vars='userId', var_name='movieId', value_name='rating')
-#
-## Filter out zeros (unrated)
-#long_df = long_df[long_df['rating'] > 0]
-#
-## Define Surprise reader
-#reader = Reader(rating_scale=(0.5, 5.0))  # Assuming ML ratings
-#
-## Load dataset
-#data = Dataset.load_from_df(long_df[['userId', 'movieId', 'rating']], reader)
-#
-## --- Train BaselineOnly ---
-#trainset, testset = train_test_split(data, test_size=0.2, random_state=42)
-#algo = BaselineOnly()
-#algo.fit(trainset)
-#predictions = algo.test(testset)
-#
-## --- Build top-N recommendations per user ---
-#def get_top_n(predictions, n=5):
-#    top_n = defaultdict(list)
-#    for uid, iid, true_r, est, _ in predictions:
-#        top_n[uid].append((iid, est))
-#    for uid, user_ratings in top_n.items():
-#        user_ratings.sort(key=lambda x: x[1], reverse=True)
-#        top_n[uid] = [iid for (iid, _) in user_ratings[:n]]
-#    return top_n
-#
-## --- Evaluate precision@k ---
-#def precision_at_k(top_n, testset, k=5, threshold=3.5):
-#    relevant = defaultdict(set)
-#    for uid, iid, true_r in testset:
-#        if true_r >= threshold:
-#            relevant[uid].add(iid)
-#
-#    precisions = []
-#    for uid in top_n:
-#        recommended = top_n[uid][:k]
-#        if not relevant[uid]:
-#            continue
-#        hits = sum((iid in relevant[uid]) for iid in recommended)
-#        precisions.append(hits / k)
-#    return sum(precisions) / len(precisions)
-#
-## --- Run evaluation ---
-#top_n = get_top_n(predictions, n=5)
-#precision = precision_at_k(top_n, testset, k=5)
-#
-#print(f"BaselineOnly Precision@5: {precision:.4f}")

@@ -2,7 +2,6 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.discriminant_analysis import StandardScaler
-#from clustering.representation import *
 from movies_data.initialisation_sampling.clustering.representation import *
 
 # ====================================

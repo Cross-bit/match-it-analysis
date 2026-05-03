@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#remove_empty_ids.py
 
 import argparse
 import csv

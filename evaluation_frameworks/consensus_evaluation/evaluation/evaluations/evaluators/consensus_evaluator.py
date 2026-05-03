@@ -278,12 +278,6 @@ def aggregate_ndcg_over_groups(
     def safe_mean(x):
         return float(np.mean(x)) if x else 0.0
 
-#    def safe_min(x):
-#        return float(np.min(x)) if x else 0.0
-#
-#    def safe_max(x):
-#        return float(np.max(x)) if x else 0.0
-
     return {
         "k": k,
         # --------- INDIVIDUAL NDCG ---------------

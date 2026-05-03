@@ -23,8 +23,6 @@ print(min_ratings_count)
 print(max_rating_count)
 print(f"{density*100:.2f}")
 
-#print(ratings_mx_df.count()[ratings_mx_df.count() > 150])
-
 
 
 

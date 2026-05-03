@@ -37,9 +37,6 @@ plt.plot(range(samples_count), movie_popularity, linestyle='-', color='b')  # Li
 plt.axvline(x=head_end, color='r', linestyle='--', label=f'Head část (Top {head_fraction*100}%)')
 plt.axvline(x=middle_end, color='g', linestyle='--', label=f'Middle část (Dalších {middle_fraction*100}%)')
 
-#head_line_patch = mpatches.Patch(color='none', label=fr'$s_{{min}} = {head_fraction}$')
-#middle_line_patch = mpatches.Patch(color='none', label=fr'$s_{{min}} = {q_min_filling}$')
-
 plt.xlabel('Movie ID', fontsize=AXIS_DESC_SIZE)
 plt.ylabel('Popularita [počet hodnocení]', fontsize=AXIS_DESC_SIZE)
 plt.title('Long-tail distribuce popularity filmů', fontsize=TITLE_SIZE)

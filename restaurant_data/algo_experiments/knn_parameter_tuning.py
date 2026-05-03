@@ -52,7 +52,7 @@ generator = LaTeXTableGeneratorSIUnitx(
 )
 
 print(generator.generate_table(
-    caption=f"Porovnání jednotlivých algoritmů na \\textit{{datasetu}} restaurací pro $\\#(r_{{min}}) \ge {min_user_ratings}$.",
+    caption=f"Porovnání jednotlivých algoritmů na \\textit{{datasetu}} restaurací pro $\\#(r_{{min}}) \\ge {min_user_ratings}$.",
     label="tab:AlgosComparisionTextTable",
     cell_bold_fn=lambda row_idx, col_idx, val: val == df.iloc[:, col_idx].max()
 ))

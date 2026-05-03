@@ -17,20 +17,6 @@ class RecAlgoGroupAggregated(RecAlgoGroupIterator):
         ...
 
 
-#class RecAlgoUpdatable(ABC):
-#    """
-#    Interface for recommenders that support dynamic updates to internal state,
-#    either for single users or groups of users.
-#    """
-#
-#    @abstractmethod
-#    def update_group_with_votes(self, user_ids: List[int], votes: Dict[int, float]) -> None:
-#        ...
-#
-#    @abstractmethod
-#    def reset_group_state(self, user_ids: List[int]) -> None:
-#        ...
-
 class RecAlgoUpdatable(ABC):
     """
     Interface for recommenders that support dynamic updates to internal state,

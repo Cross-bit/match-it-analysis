@@ -68,34 +68,3 @@ class MultiHeaderLaTeXTableGenerator(LaTeXTableGenerator):
             lines.append(f"\\label{{{label}}}")
         lines.append("\\end{table}")
         return "\n".join(lines)
-
-
-#
-# Example usage
-#
-#data = {
-#    "Efekt": ["Abs. člen", "Pohlaví (muž)", "Výška (cm)"],
-#    "Odhad_A": [-10.01, 9.89, 0.78],
-#    "Směrod. chyba_A": [1.01, 5.98, 0.12],
-#    "P-hodnota_A": ["\\mc{---}", 0.098, "<0.001"],
-#    "Odhad_B": [-9.75, 8.55, 0.65],
-#    "Směrod. chyba_B": [1.10, 6.01, 0.10],
-#    "P-hodnota_B": ["\\mc{---}", 0.045, "<0.001"]
-#}
-#
-#df = pd.DataFrame(data)
-#
-#df.columns = ["Efekt"] + ["Odhad", "Směrod. chyba", "P-hodnota"] * 2
-#
-#generator = MultiHeaderLaTeXTableGenerator(
-#    df,
-#    group_headers=["Model A", "Model B"],
-#    group_size=3,
-#    column_specs=[(3, 2), (1, 2), (2, 3)] * 2
-#)
-#
-#print(generator.generate_table(
-#    caption="Srovnání modelů A a B",
-#    label="tab:modely",
-#    note="\\textit{Pozn:} $^a$ Směrodatná chyba odhadu metodou Monte Carlo."
-#))

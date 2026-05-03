@@ -154,7 +154,7 @@ def generate_table(measure: ExperimentResults, min_user_rating: int, regularisat
     )
 
     print(generator.generate_table(
-        caption=f"Přesnost $\\text{{EASE}}^R$ pro různé volby $\\lambda$ pro \\textit{{dataset}} s minimálním počtem hodnocení uživatelů $\\#(r_{{min}}) \ge {min_user_rating}$",
+        caption=f"Přesnost $\\text{{EASE}}^R$ pro různé volby $\\lambda$ pro \\textit{{dataset}} s minimálním počtem hodnocení uživatelů $\\#(r_{{min}}) \\ge {min_user_rating}$",
         label="tab:EaserRegMeasure",
         cell_bold_fn=lambda row_idx, col_idx, val: val == df.iloc[:, col_idx].max()
     ))

@@ -16,7 +16,6 @@ class RecAlgoBase(ABC):
     @overload
     def predict(self, user_id: int, item_id: int) -> float: ...
 
-# TODO: move somewhere else??
 class RecAlgoIterator(ABC):
     @abstractmethod
     def top_k_iterator(self, user_id: int, exclude: Optional[Set[int]] = None) -> TopKIterator:
