@@ -1,5 +1,5 @@
 """
-Průběh evaluace v dávce (např. ``run_consensus_eval_fast.sh``).
+Průběh evaluace v dávce (např. sériové ``make`` / vlastní bash wrapper nad více ``-m`` moduly).
 
 Bash (volitelné, pro řádek „globálně x/y“):
   CONS_EVAL_BATCH_MODULE_IDX / CONS_EVAL_BATCH_MODULE_TOTAL

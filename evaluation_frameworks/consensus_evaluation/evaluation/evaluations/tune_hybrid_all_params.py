@@ -2,7 +2,7 @@
 **Tune — wide joint search across many hybrid hyperparameters (H0/H1 style).**
 
 Intended for large exploratory sweeps rather than tight daily reruns; coordinates many
-combinations (see ``run_consensus.sh tune-hybrid`` orchestration). Use smaller group counts by default.
+combinations (often chained from ``make tune_hybrid_all_params`` or a local batch wrapper). Use smaller group counts by default.
 """
 
 import gc
