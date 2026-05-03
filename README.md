@@ -24,7 +24,7 @@ Výstupy jsou typicky:
 
 Ukázka grafu do `img/`: `make movie-popularity-histogram` → soubor `long_tail_popularity_movielens.pdf` (MovieLens musí být pod `dataset/movies/…`).
 
-**WSL / bez obrazovky:** v `Makefile` je `export MPLBACKEND=Agg`, aby matplotlib nečekal na GUI u `plt.show()`. Spouštíš-li `python -m …` mimo `make`, použij např. `MPLBACKEND=Agg python3 -m movies_data.popularity_histogram`.
+Na prostředí bez okna (typicky WSL bez X11) může Matplotlib u `plt.show()` čekat na GUI a proces zamrzne. V `Makefile` je proto `export MPLBACKEND=Agg`: `**MPLBACKEND**` je oficiální proměnná prostředí Matplotlibu — nastavuje backend; hodnota `Agg` kreslí jen do souboru (raster/PDF), bez interaktivního okna ([proměnné prostředí](https://matplotlib.org/stable/installing/environment_variables.html)). Při ručním `python3 -m …` mimo `make` uvést např. `MPLBACKEND=Agg python3 -m movies_data.popularity_histogram`.
 
 ## Nejčastější příkazy
 
@@ -89,7 +89,7 @@ make MODE=compute restaurant-algo-comparison
 
 ## Cache pravidla
 
-Průběžné artefakty (pickle, mezipočty apod.) se ukládají pod `cache/`, ne do kořene repozitáře; kořenové `.pkl` soubory sem nepatří.
+Průběžné artefakty (pickle, mezipočty apod.) se ukládají pod `cache/`.
 
 V `utils/config.py` jsou k dispozici například:
 
@@ -107,7 +107,7 @@ cache/
   restaurants/
 ```
 
-**Dataset restaurací:** surová data patří do `dataset/restaurants/` (typicky `places.json`, v gitu často ignorované). **Odvozené** drobné tabulky ze skriptů (např. `user_reviews_percentages.csv`) ukládej do `dataset/restaurants/derived/`, ne do `restaurant_data/`.
+**Dataset restaurací:** surová data patří do `dataset/restaurants/` (typicky `places.json`, v gitu často ignorované). **Odvozené** drobné tabulky ze skriptů (např. `user_reviews_percentages.csv`) ukládat do `dataset/restaurants/derived/`, nikoli do `restaurant_data/`.
 
 ## Mapování práce (LaTeX) ↔ výstupy z tohoto repozitáře
 

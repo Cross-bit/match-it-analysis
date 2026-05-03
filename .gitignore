@@ -13,6 +13,9 @@ __pycache__/
 # Jupyter autosave copies (edit the main .ipynb only)
 **/.ipynb_checkpoints/
 
+# Generated figures (obnovitelné přes skripty / Makefile)
+/img/
+
 # Large local evaluation artifacts
 *.log
 *.tmp
