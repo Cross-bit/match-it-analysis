@@ -311,17 +311,24 @@ methods = {
 ## EXECUTION and Evaluation
 ##
 
-cache_file_name = cache_path("movies", "init-sampling", "inti_sampling_tests_all.pkl")
+cache_file_name = cache_path("movies", "init-sampling", "init_sampling_tests_all.pkl")
+legacy_cache_name = cache_path("movies", "init-sampling", "inti_sampling_tests_all.pkl")
 load = True
 
 if load and cache_file_name.exists():
-    with open(cache_file_name, 'rb') as f:
+    with open(cache_file_name, "rb") as f:
         aggs = pickle.load(f)
+elif load and legacy_cache_name.exists():
+    with open(legacy_cache_name, "rb") as f:
+        aggs = pickle.load(f)
+    cache_file_name.parent.mkdir(parents=True, exist_ok=True)
+    with open(cache_file_name, "wb") as f:
+        pickle.dump(aggs, f)
 else:
     evaluations = evaluate(methods, 10)
     aggs = aggregate_evaluation_results(evaluations)
     cache_file_name.parent.mkdir(parents=True, exist_ok=True)
-    with open(cache_file_name, 'wb') as f:
+    with open(cache_file_name, "wb") as f:
         pickle.dump(aggs, f)
 
 plot_aggregated_results(aggs)

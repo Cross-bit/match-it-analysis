@@ -11,6 +11,8 @@ from typing import List, Dict
 
 from tqdm import tqdm
 
+from paths import OUT_DIR, ensure_out_dir
+
 # =====================================================
 # DESCRIPTION
 # =====================================================
@@ -30,8 +32,6 @@ from tqdm import tqdm
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 RATE_LIMIT_DELAY = 0.25  # ~4 req/s (bezpečné)
 TIMEOUT = 10
-
-SCRIPT_DIR = Path(__file__).resolve().parent
 
 def load_tmdb_ids(csv_path: str) -> List[int]:
     tmdb_ids = []
@@ -116,15 +116,17 @@ if __name__ == "__main__":
     TMDB_API_KEY = os.getenv("TMDB_API_KEY", "")
 
     parser = argparse.ArgumentParser(description="Validate TMDB IDs from MovieLens CSV")
-    parser.add_argument("--csv", help="Path to MovieLens links.csv", default=SCRIPT_DIR / "links.csv")
+    parser.add_argument("--csv", help="Path to MovieLens links.csv", default=OUT_DIR / "links.csv")
     parser.add_argument("--api-key", help="TMDB API key", default=TMDB_API_KEY)
     parser.add_argument(
         "--out",
-        default=SCRIPT_DIR / "missing_en_tmdb_ids.csv",
+        default=OUT_DIR / "missing_en_tmdb_ids.csv",
         help="Output CSV with invalid TMDB IDs",
     )
 
     args = parser.parse_args()
+
+    ensure_out_dir()
 
     logging.basicConfig(
         level=logging.INFO,

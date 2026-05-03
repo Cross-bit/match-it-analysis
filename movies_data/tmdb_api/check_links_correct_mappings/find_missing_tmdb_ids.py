@@ -9,6 +9,8 @@ from typing import List, Dict, Optional
 import requests
 from tqdm import tqdm
 
+from paths import OUT_DIR, ensure_out_dir
+
 
 # =====================================================
 # DESCRIPTION
@@ -30,9 +32,6 @@ TMDB_BASE_URL = "https://api.themoviedb.org/3" # base API url
 TMDB_WEB_MOVIE_URL = "https://www.themoviedb.org/movie"
 RATE_LIMIT_DELAY = 0.15 # rate limit between requests
 TIMEOUT = 10
-
-SCRIPT_DIR = Path(__file__).resolve().parent
-
 
 # ----------------------------
 # Utils
@@ -220,12 +219,14 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser(description="Repair missing TMDB IDs")
-    parser.add_argument("--input", help="CSV with tmdbId column", default=SCRIPT_DIR / "missing_en_tmdb_ids.csv")
+    parser.add_argument("--input", help="CSV with tmdbId column", default=OUT_DIR / "missing_en_tmdb_ids.csv")
     parser.add_argument("--api-key", help="TMDB API key", default=TMDB_API_KEY)
-    parser.add_argument("--out-ok", default=SCRIPT_DIR / "repaired.csv")
-    parser.add_argument("--out-bad", default=SCRIPT_DIR / "unresolved.csv")
+    parser.add_argument("--out-ok", default=OUT_DIR / "repaired.csv")
+    parser.add_argument("--out-bad", default=OUT_DIR / "unresolved.csv")
 
     args = parser.parse_args()
+
+    ensure_out_dir()
 
     main(
         Path(args.input),

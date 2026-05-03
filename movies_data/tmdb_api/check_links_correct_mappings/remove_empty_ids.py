@@ -4,7 +4,7 @@ import argparse
 import csv
 from pathlib import Path
 
-SCRIPT_DIR = Path(__file__).resolve().parent
+from paths import DATA_DIR, OUT_DIR, ensure_data_dir, ensure_out_dir
 
 
 def remove_empty_tmdb_ids(
@@ -60,13 +60,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--links",
-        help="Path to original links.csv",
-        default=SCRIPT_DIR / "links_original.csv",
+        help="Path to original links.csv (záloha z MovieLens)",
+        default=DATA_DIR / "links_original.csv",
     )
     parser.add_argument(
         "--out",
-        help="Path to output links.csv",
-        default=SCRIPT_DIR / "links.csv",
+        help="Path to output links.csv (čisté odkazy do dalších kroků)",
+        default=OUT_DIR / "links.csv",
     )
     parser.add_argument(
         "--dedupe",
@@ -75,6 +75,9 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+
+    ensure_data_dir()
+    ensure_out_dir()
 
     remove_empty_tmdb_ids(
         args.links,

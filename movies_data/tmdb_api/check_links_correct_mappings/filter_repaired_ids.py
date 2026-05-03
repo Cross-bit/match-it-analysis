@@ -6,12 +6,13 @@ import argparse
 from pathlib import Path
 from difflib import SequenceMatcher
 
+from paths import DATA_DIR, OUT_DIR, ensure_data_dir, ensure_out_dir
+
 # =====================================================
 # CONFIG
 # =====================================================
 
 SIMILARITY_THRESHOLD = 0.65
-SCRIPT_DIR = Path(__file__).resolve().parent
 
 # =====================================================
 # HELPERS
@@ -204,25 +205,28 @@ if __name__ == "__main__":
     parser.add_argument(
         "--repaired",
         help="Path to repaired.csv",
-        default=SCRIPT_DIR / "repaired.csv",
+        default=OUT_DIR / "repaired.csv",
     )
     parser.add_argument(
         "--links",
         help="Path to links.csv",
-        default=SCRIPT_DIR / "links.csv",
+        default=OUT_DIR / "links.csv",
     )
     parser.add_argument(
         "--movies",
         help="Path to movies.csv",
-        default=SCRIPT_DIR / "movies.csv",
+        default=DATA_DIR / "movies.csv",
     )
     parser.add_argument(
         "--out",
         help="Output CSV",
-        default=SCRIPT_DIR / "repaired_filtered.csv",
+        default=OUT_DIR / "repaired_filtered.csv",
     )
 
     args = parser.parse_args()
+
+    ensure_data_dir()
+    ensure_out_dir()
 
     main(
         Path(args.repaired),

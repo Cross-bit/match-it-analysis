@@ -5,6 +5,9 @@
 #
 #
 
+# Matplotlib bez GUI (WSL bez X11/WSLg, CI). Jinak výchozí backend u plt.show() často zamrzne.
+export MPLBACKEND := Agg
+
 # =============================
 # GROUP ALGORITHMS
 # =============================

@@ -5,6 +5,8 @@ import argparse
 import logging
 from pathlib import Path
 
+from paths import OUT_DIR, ensure_out_dir
+
 # =====================================================
 # DESCRIPTION
 # =====================================================
@@ -15,8 +17,6 @@ from pathlib import Path
 # Output:
 # links_repaired.csv -- movieId,imdbId,tmdbId
 #   contains all links with repaired ids.
-
-SCRIPT_DIR = Path(__file__).resolve().parent
 
 
 # =====================================================
@@ -146,9 +146,9 @@ def process_links(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Merge links.csv with repaired & unresolved TMDB IDs")
-    parser.add_argument("--links", help="Path to original links.csv", default=SCRIPT_DIR / "links.csv")
-    parser.add_argument("--repaired", help="Path to repaired.csv", default=SCRIPT_DIR / "repaired_filtered.csv")
-    parser.add_argument("--unresolved", help="Path to unresolved.csv", default=SCRIPT_DIR / "unresolved.csv")
+    parser.add_argument("--links", help="Path to original links.csv", default=OUT_DIR / "links.csv")
+    parser.add_argument("--repaired", help="Path to repaired.csv", default=OUT_DIR / "repaired_filtered.csv")
+    parser.add_argument("--unresolved", help="Path to unresolved.csv", default=OUT_DIR / "unresolved.csv")
     parser.add_argument(
         "--mode",
         choices=["repaired", "drop-unresolved"],
@@ -157,11 +157,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--out",
-        default=SCRIPT_DIR / "links_repaired.csv",
+        default=OUT_DIR / "links_repaired.csv",
         help="Output CSV"
     )
 
     args = parser.parse_args()
+
+    ensure_out_dir()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 

@@ -4,8 +4,7 @@ from matplotlib import pyplot as plt
 from utils.config import IMG_OUTPUT_PATH
 import numpy as np
 from surprise import Dataset, KNNBasic, Reader
-from  evaluation_frameworks.general_recommender_evaluation.algorithms.item_knn import ItemItemCFEvaluation
-from  evaluation_frameworks.general_recommender_evaluation.algorithms.user_knn import UserKnnCFEvaluation
+from evaluation_frameworks.general_recommender_evaluation.algorithms.user_knn import UserKnnCFEvaluation
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -16,21 +15,19 @@ ratings_matrix: pd.DataFrame = d_loader.load_ratings_matrix()
 
 #region Plotting
 
-def plot_metrics_line_charts(metrics_list):
+def plot_metrics_line_charts(metrics_list, min_rating_thresholds):
     """
     Plots line charts for precision@K, recall@K, and ndcg@K metrics.
 
     Args:
-        metrics_list (List[Dict[str, float]]): A list where each dict contains evaluation metrics:
-            'precision@K', 'recall@K', and 'ndcg@K'
+        metrics_list: hodnoty metrik v pořadí odpovídajícím ``min_rating_thresholds``
+        min_rating_thresholds: osa X — minimální počet hodnocení na uživatele pro daný bod
     """
-    # Extract individual metric lists
-    precision = [m['precision@K'] for m in metrics_list]
-    recall = [m['recall@K'] for m in metrics_list]
-    ndcg = [m['ndcg@K'] for m in metrics_list]
+    precision = [m["precision@K"] for m in metrics_list]
+    recall = [m["recall@K"] for m in metrics_list]
+    ndcg = [m["ndcg@K"] for m in metrics_list]
 
-    # X values starting at 2
-    x = list(range(2, 2 + len(metrics_list)))
+    x = list(min_rating_thresholds)
 
     # Create 3 vertically stacked subplots
     fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(10, 8), dpi=100)
@@ -60,7 +57,7 @@ def plot_metrics_line_charts(metrics_list):
     output_path = os.path.join(IMG_OUTPUT_PATH, "knn-evaluation-by-dataset-size.pdf")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     plt.savefig(output_path)
-    plt.show()
+    plt.close("all")
 #endRegion
 
 #
@@ -82,15 +79,32 @@ def remove_users_from_ratings_matrix_by_ratings_count(ratings_matrix: pd.DataFra
     df_cleaned = df_cleaned.loc[:, (df_cleaned != 0).any(axis = 0)] # drop zero columns
     return df_cleaned
 
-# min number ratings user has to have, otherwise filter out
-runs_count = 10
-
+CV_SPLITS = 20
+# KFold potřebuje dostatek řádků hodnocení; při řídkých datech nižší prahy přeskočit.
+MIN_TOTAL_RATINGS = max(30, CV_SPLITS * 2)
 
 results = []
-for min_number_ratings in range(2, 31):
-    filtered_dataset = remove_users_from_ratings_matrix_by_ratings_count(ratings_matrix, min_number_ratings)
-    eval = UserKnnCFEvaluation(filtered_dataset,k=20, algorithm_k=70)
-    res = eval.evaluate_crossval(20)
+thresholds_used = []
+for min_number_ratings in range(1, 31):
+    filtered_dataset = remove_users_from_ratings_matrix_by_ratings_count(
+        ratings_matrix, min_number_ratings
+    )
+    nnz = int(((filtered_dataset != 0) & filtered_dataset.notna()).sum().sum())
+    if nnz < MIN_TOTAL_RATINGS:
+        print(
+            f"Skipping min_user_ratings={min_number_ratings}: "
+            f"only {nnz} ratings (< {MIN_TOTAL_RATINGS} needed for CV)"
+        )
+        continue
+    evaluator = UserKnnCFEvaluation(filtered_dataset, k=20, algorithm_k=70)
+    res = evaluator.evaluate_crossval(CV_SPLITS)
     results.append(res)
+    thresholds_used.append(min_number_ratings)
 
-plot_metrics_line_charts(results)
+if not results:
+    raise RuntimeError(
+        "Žádný bod experimentu — příliš málo hodnocení v matici po filtrech. "
+        "Zkontroluj dataset/restaurants/places.json nebo sniž MIN_TOTAL_RATINGS / CV_SPLITS."
+    )
+
+plot_metrics_line_charts(results, thresholds_used)

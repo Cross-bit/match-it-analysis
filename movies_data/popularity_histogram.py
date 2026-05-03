@@ -50,8 +50,10 @@ plt.xticks(
 plt.yticks(fontsize=AXIS_VALS_SIZE)
 plt.tight_layout()
 plt.legend(fontsize=AXIS_VALS_SIZE)
-plt.savefig(os.path.join(IMG_OUTPUT_PATH, "long_tail_popularity_movielens.pdf"))
-plt.show()
+out_path = os.path.join(IMG_OUTPUT_PATH, "long_tail_popularity_movielens.pdf")
+plt.savefig(out_path)
+plt.close("all")
 
+print(f"Uloženo: {os.path.abspath(out_path)}")
 print(f"Total movies: {movie_popularity.size}")
 print(f"Maximum ratings for a movie: {movie_popularity.max()}")

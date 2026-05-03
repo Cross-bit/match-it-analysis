@@ -1,11 +1,11 @@
 import subprocess
-from utils.config import THESIS_PROJECT_ROOT
+from utils.config import WORKSPACE_PARENT_ROOT
 import argparse
 import shutil
 import os
 
 def get_real_file_path(tex_file_name):
-    return os.path.join(THESIS_PROJECT_ROOT, tex_file_name)
+    return os.path.join(WORKSPACE_PARENT_ROOT, tex_file_name)
 
 def make_backup(latex_files, backup_dir = "backup"):
     """Creates backups of the files updated."""

@@ -8,11 +8,14 @@ import os
 
 import numpy as np
 import pandas as pd
+from pathlib import Path
+
 from utils.config import (
     HISTOGRAM_COLOR_1,
     HISTOGRAM_EDGECOLOR_1,
     IMG_OUTPUT_PATH,
     RESTAURANT_DATASET_ROOT,
+    RESTAURANT_DERIVED_DIR,
 )
 from dataset.data_access import DatasetLoader
 
@@ -175,17 +178,20 @@ def get_places_with_reviews():
 def get_places_data_with_review(places_data: Dict):
     return {k: v for k, v in places_data.items() if "reviews" in v and v['reviews'] != []}
 
-def store_user_places_percentages(frequencies: Dict[str, list[str]], upper_frequency_limit: int, file_name, print_console: bool = False):
+def store_user_places_percentages(frequencies: list, upper_frequency_limit: int, file_name, print_console: bool = False):
     """
     Stores the user reviews frequencies - meaning how many users have reviewed 1, 2, 3, ... places.
     To csv file.
 
+    frequencies: list of per-user review counts (same as output of get_users_reviews_count_frequencies).
+
     upper_frequency_limit: the upper limit of the number of reviews to consider as separate category.
                             Anything above this limit will be aggregated into single category.
     """
+    out_path = Path(file_name)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
 
-
-    with open(file_name, 'w') as file:
+    with open(out_path, 'w', encoding='utf-8') as file:
         total_percentage = 0
         for k in range(1, upper_frequency_limit + 1):
             reviewers_count = frequencies.count(k) # number of users that have reviewed k places
@@ -306,3 +312,6 @@ if __name__ == "__main__":
 
     reviews_frequencies = get_users_reviews_count_frequencies(aggregated_authors_places)
     plot_users_reviews_count_histogram(reviews_frequencies, 31)
+
+    percentages_csv = RESTAURANT_DERIVED_DIR / "user_reviews_percentages.csv"
+    store_user_places_percentages(reviews_frequencies, 10, str(percentages_csv))

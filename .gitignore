@@ -36,6 +36,7 @@ dataset/movies/ml-32m/genome-scores.csv
 dataset/movies/ml-32m/genome-tags.csv
 dataset/movies/ml-32m/sparse-cached-ml-32m.pkl
 dataset/movies/ml-32m/*.pkl
+# Legacy stray pickles (canonical paths live under cache/movies/)
 movies_data/*.pkl
 movies_data/initialisation_sampling/**/*.pkl
 

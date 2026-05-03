@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from dataclasses import dataclass
 from matplotlib import pyplot as plt
-from evaluation_frameworks.general_recommender_evaluation.algorithms.item_knn import ItemItemCFEvaluation
+from evaluation_frameworks.general_recommender_evaluation.algorithms.item_knn import ItemKnnCFEvaluation
 from latex_utils.latex_table_generator import LaTeXTableGenerator, LaTeXTableGeneratorSIUnitx
 from latex_utils.latex_multihead_generator import MultiHeaderLaTeXTableGenerator
 
@@ -65,7 +65,7 @@ def parameter_test(precision_k, knn_k_options: List, min_number_of_ratings = 2):
     results = []
 
     for knn_k_value in knn_k_options:
-        easer_eval = ItemItemCFEvaluation(filtered_matrix, precision_k, knn_k_value)
+        easer_eval = ItemKnnCFEvaluation(filtered_matrix, precision_k, knn_k_value)
         easer_eval.fit()
         res = easer_eval.evaluate_crossval(20)
         results.append((knn_k_value, res))

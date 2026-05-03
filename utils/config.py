@@ -2,26 +2,23 @@ from pathlib import Path
 import os
 import pickle
 
-def find_project_root(marker="img") -> Path:
-    current = Path(__file__).resolve()
-    for parent in current.parents:
-        if (parent / marker).exists():
-            return parent
-    raise RuntimeError(f"Project root not found (no {marker}/ folder above {__file__})")
+# Kořen tohoto repozitáře (``analysis/``): nadřazený adresář ``utils/``, kde leží tento soubor.
+ANALYSIS_PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-THESIS_PROJECT_ROOT = find_project_root("img") # first directory that contains the img dir
-ANALYSIS_PROJECT_ROOT = (
-    THESIS_PROJECT_ROOT
-    if THESIS_PROJECT_ROOT.name == "analysis"
-    else THESIS_PROJECT_ROOT / "analysis"
-)
+# Nadřazený adresář nad kořenem tohoto repa (`analysis/` → jeho rodič). Nepoužívá se pro grafy ani cache.
+# Volitelně např. `utils/orchestration/render_tables.py`, pokud `.tex` leží vedle složky `analysis/`.
+WORKSPACE_PARENT_ROOT = ANALYSIS_PROJECT_ROOT.parent
 
-IMG_OUTPUT_PATH = THESIS_PROJECT_ROOT / "img"
+# Grafy vedle `cache/`: `analysis/img/`.
+IMG_OUTPUT_PATH = ANALYSIS_PROJECT_ROOT / "img"
+IMG_OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
 
 CACHE_FILES_DIR = ANALYSIS_PROJECT_ROOT / "cache"
 DATASET_ROOT = ANALYSIS_PROJECT_ROOT / "dataset"
 MOVIES_DATASET_ROOT = DATASET_ROOT / "movies"
 RESTAURANT_DATASET_ROOT = DATASET_ROOT / "restaurants"
+# Odvozené statistiky / tabulky generované ze skriptů (CSV vedle raw JSON)
+RESTAURANT_DERIVED_DIR = RESTAURANT_DATASET_ROOT / "derived"
 
 
 def cache_path(*parts: str) -> Path:
