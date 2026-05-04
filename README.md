@@ -24,7 +24,7 @@ Výstupy jsou typicky:
 
 Ukázka grafu do `img/`: `make movie-popularity-histogram` → soubor `long_tail_popularity_movielens.pdf` (MovieLens musí být pod `dataset/movies/…`).
 
-Na prostředí bez okna (typicky WSL bez X11) může Matplotlib u `plt.show()` čekat na GUI a proces zamrzne. V `Makefile` je proto `export MPLBACKEND=Agg`: `**MPLBACKEND**` je oficiální proměnná prostředí Matplotlibu — nastavuje backend; hodnota `Agg` kreslí jen do souboru (raster/PDF), bez interaktivního okna ([proměnné prostředí](https://matplotlib.org/stable/installing/environment_variables.html)). Při ručním `python3 -m …` mimo `make` uvést např. `MPLBACKEND=Agg python3 -m movies_data.popularity_histogram`.
+Na prostředí bez okna (typicky WSL bez X11) může Matplotlib u `plt.show()` čekat na GUI a proces zamrzne. V `Makefile` je proto `export MPLBACKEND=Agg`: proměnná prostředí **MPLBACKEND** je oficiální volba Matplotlibu — nastavuje backend; hodnota `Agg` kreslí jen do souboru (raster/PDF), bez interaktivního okna ([proměnné prostředí](https://matplotlib.org/stable/installing/environment_variables.html)). Při ručním `python3 -m …` mimo `make` uvést např. `MPLBACKEND=Agg python3 -m movies_data.popularity_histogram`.
 
 ## Nejčastější příkazy
 
