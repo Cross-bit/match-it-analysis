@@ -113,9 +113,9 @@ cache/
 
 PDF grafy z analytických skriptů jdou do `analysis/img/` (stejná úroveň jako `analysis/cache/`; `IMG_OUTPUT_PATH` v `utils/config.py`). Složka `img/` se při importu `utils.config` založí, pokud chybí.
 
-**Tabulky** skript obvykle vytiskne jako LaTeX na **stdout** (zkopírovat do `.tex`).
+**Tabulky** skript obvykle vytiskne jako LaTeX na **stdout**.
 
-**Spuštění end-to-end** vyžaduje lokální data (MovieLens, `dataset/restaurants/…`, cache evaluací u konsenzu) — bez nich skript spadne na načtení, i když je syntax OK.
+**Spuštění end-to-end** vyžaduje lokální data (MovieLens, `dataset/restaurants/…`, cache evaluací u konsenzu).
 
 ### Grafy (PDF) — citované v textu / příloze, generované zde
 
@@ -137,8 +137,6 @@ PDF grafy z analytických skriptů jdou do `analysis/img/` (stejná úroveň jak
 | `init_sample_size_accuracy2_popularity_comp.pdf`                                                                                   | RMSE vs velikost vzorku                                                              | `movies_data/initialisation_size.py`                                   | `make init-size`                                |
 | `recommendation_year_distribution_ease_multiplicative_beta_*.pdf` (název podle `RERANK_MODE` / `RECENCY_PARAM` v souboru)          | rozložení roku po reranku                                                            | `movies_data/distribution_year_release_vs_easer.py`                    | `make movie-distribution-year-release-vs-easer` |
 
-
-**Není generováno skripty z tohoto repozitáře** (typicky nástroj na diagramy, šablona, nebo jiný projekt): např. `sequel-diversity-importance.pdf`, `ndcg.pdf`, `sigmoid_c0_lower_bound.pdf`, `sigmoid_c0_lower_upper_bound.pdf`, `sigmoids-eval-agent.pdf`, diagramy async/sync konsenzu (`async-*.pdf`, `sync-*.pdf`), UML (`*_UML.pdf`), ER/db (`db_*.pdf`), Android (`ActivitiesTransitions.pdf`, …), `profile_creation.pdf`, `logo-cs.pdf`. Ty patří do přílohy jako zdroje z návrhu/GUI, ne z `analysis/*.py`.
 
 ### Tabulky (LaTeX na stdout)
 
